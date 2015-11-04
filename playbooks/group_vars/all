@@ -2,6 +2,7 @@
 cluster_name: testcluster
 dserepouser: 'user'
 dserepopass: 'pass'
+dsehost: ''
 external_int: 'eth0'
 internal_int: 'eth1'
 cluster_interface: '{{ external_int }}'
