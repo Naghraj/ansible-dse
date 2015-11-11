@@ -2,7 +2,7 @@
 cluster_name: testcluster
 dserepouser: 'user'
 dserepopass: 'pass'
-dsehost: ''
+dsehost: 'rpm.datastax.com'
 external_int: 'eth0'
 internal_int: 'eth1'
 cluster_interface: '{{ external_int }}'
