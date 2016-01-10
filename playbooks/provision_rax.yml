@@ -20,7 +20,7 @@
       local_action:
         module: rax
         credentials: "{{ cloud_config.rax_credentials_file }}"
-        name: "dse-%02d.{{ item.value.region}}.{{ cloud_config.domain }}"
+        name: "dse-%02d.{{ item.value.region|lower }}.{{ cloud_config.domain }}"
         image: "{{ cloud_image }}"
         flavor: "{{ cloud_flavor }}"
         region: "{{ item.value.region }}"
