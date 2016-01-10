@@ -3,33 +3,40 @@
   connection: local
   gather_facts: False
   tasks:
+    - name: "Add the first node to the opscenter variable group"
+      add_host:
+        name: "{{ hostvars[item].inventory_hostname }}"
+        groups: opscenter-nodes
+      with_items: groups['dse-nodes']|sort|first
+      tags:
+      - always
     - name: "Add all cluster nodes to the dse-cluster group"
       add_host:
         name: "{{ hostvars[item].inventory_hostname }}"
         groups: dse-cluster
       with_flattened:
         - groups['dse-nodes']|default([])
-      tags:
-      - always
-    - name: "Add the first node to the opscenter variable group"
-      add_host:
-        name: "{{ hostvars[item].inventory_hostname }}"
-        groups: opscenter-node
-      with_items: groups['dse-nodes']|sort|first
+        - groups['opscenter-nodes']|default([])
       tags:
       - always
 
-- name: run common
-  hosts: dse-nodes
+
+- name: "Apply the common role to all nodes"
+  hosts: dse-cluster
   remote_user: root
   roles:
     - common
 
-- name: "Apply the opscenter role to the opscenter group"
-  hosts: opscenter-node
+- name: "Apply the dse role to dse nodes"
+  hosts: dse-nodes
+  remote_user: root
+  roles:
+    - dse
+
+- name: "Apply the opscenter role to the opscenter nodes"
+  hosts: opscenter-nodes
   remote_user: root
   roles:
     - opscenter
   tags:
     - opscenter
-

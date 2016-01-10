@@ -1,0 +1,24 @@
+---
+- name: install DSE 
+  yum: name=dse-full state=installed
+  tags:
+    - packages
+
+- include: config.yml
+  tags:
+    - configuration
+
+- name: start dse service
+  service: name=dse state=started
+  tags:
+    - services
+
+- name: install dse agent
+  yum: name=datastax-agent state=installed
+  tags:
+    - packages
+
+- name: start dse agent
+  service: name=datastax-agent state=started
+  tags:
+    - services

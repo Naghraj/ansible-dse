@@ -30,27 +30,3 @@
   template: src=datastax_repo.j2 dest=/etc/yum.repos.d/datastax.repo mode=0644
   tags:
     - packages
-
-- name: install DSE 
-  yum: name=dse-full state=installed
-  tags:
-    - packages
-
-- include: config.yml
-  tags:
-    - configuration
-
-- name: start dse service
-  service: name=dse state=started
-  tags:
-    - services
-
-- name: install dse agent
-  yum: name=datastax-agent state=installed
-  tags:
-    - packages
-
-- name: start dse agent
-  service: name=datastax-agent state=started
-  tags:
-    - services
