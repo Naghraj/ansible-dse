@@ -15,9 +15,20 @@
   yum: name={{ item }} state=installed
   with_items:
     - epel-release
-    - java-1.8.0-openjdk
+    - java-1.8.0-openjdk-devel
     - python-httplib2
     - ntp
+    - sysstat
+    - lsof
+    - parted
+    - openssh-clients
+    - unzip
+    - curl
+    - wget
+    - iotop
+    - ntpdate
+    - chrony
+    - nmap-ncat
   tags:
     - packages
 
