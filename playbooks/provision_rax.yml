@@ -4,8 +4,8 @@
   connection: local
   gather_facts: False
   tasks:
-    - name: Include cassandra-nodes group variables
-      include_vars: group_vars/cassandra-nodes
+    - name: Include dse-nodes group variables
+      include_vars: group_vars/dse-nodes
 
     - name: Create the SSH keypair
       local_action:
