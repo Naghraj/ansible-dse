@@ -39,6 +39,26 @@
   tags:
     - services
 
+- name: Set nofile limits
+  lineinfile: dest=/etc/security/limits.conf
+              insertbefore="^# End of file"
+              state=present
+              line="{{ item }}"
+  with_items:
+    - "* soft nofile 32768"
+    - "* hard nofile 32768"
+
+- name: Set nproc limits
+  lineinfile: dest=/etc/security/limits.d/90-nproc.conf
+              insertafter=EOF
+              state=present
+              create=yes
+              line="{{ item }}"
+              mode=0644
+  with_items:
+    - "* soft nproc 32768"
+    - "* hard nproc 32768"
+
 - name: Set the tuned profile
   copy: src=tuned.conf
         dest=/etc/tuned/hadoop/
