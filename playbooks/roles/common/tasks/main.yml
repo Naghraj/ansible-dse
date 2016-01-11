@@ -28,6 +28,12 @@
   tags:
     - configuration
 
+- name: Make sure the NTP service is stopped
+  service: name={{ ntp_service }} state=stopped
+
+- name: Force NTP sync
+  command: "{{ ntp_sync }}"
+
 - name: Start the NTP service
   service: name={{ ntp_service }} state=started enabled=yes
   tags:
