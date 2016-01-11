@@ -1,24 +1,38 @@
 ---
-- name: install DSE 
-  yum: name=dse-full state=installed
+- name: Load OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_os_family|lower }}.yml"
+        - defaults.yml
+      paths:
+        - ../vars
+
+- name: Install DSE
+  action: "{{ package_info.pkg_mgr }}"
+  args: package_info.args
+  with_items: package_info.pkgs
+  when: package_info.pkgs|length > 0
   tags:
     - packages
+
+- name: Reload systemd
+  sudo: yes
+  command: systemctl daemon-reload
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
 - include: config.yml
   tags:
     - configuration
 
-- name: start dse service
-  service: name=dse state=started
+- meta: flush_handlers
+
+- name: Start DSE service
+  service: name=dse state=started enabled=yes
   tags:
     - services
 
-- name: install dse agent
-  yum: name=datastax-agent state=installed
-  tags:
-    - packages
-
-- name: start dse agent
-  service: name=datastax-agent state=started
+- name: Start DataStax Agent
+  service: name=datastax-agent state=started enabled=yes
   tags:
     - services

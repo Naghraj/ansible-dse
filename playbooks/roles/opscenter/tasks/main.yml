@@ -1,5 +1,18 @@
-- name: install opscenter
-  yum: name=opscenter state=present
+---
+- name: Load OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_os_family|lower }}.yml"
+        - defaults.yml
+      paths:
+        - ../vars
+
+- name: Install OpsCenter
+  action: "{{ package_info.pkg_mgr }}"
+  args: package_info.args
+  tags:
+    - packages
 
 - name: start opscenter
   service: name=opscenterd state=started

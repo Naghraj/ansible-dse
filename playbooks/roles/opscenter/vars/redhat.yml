@@ -1,0 +1,6 @@
+package_info:
+  pkg_mgr: yum
+  args:
+    pkg: "opscenter"
+    state: latest
+    update_cache: yes

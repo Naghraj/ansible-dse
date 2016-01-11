@@ -1,0 +1,9 @@
+package_info:
+  pkg_mgr: apt
+  args:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  pkgs:
+    - dse-full
+    - datastax-agent

@@ -17,4 +17,4 @@
 
 - name: set datastax opscenter IP for agent 
   template: src=ds-agent-address_yaml dest=/var/lib/datastax-agent/conf/address.yaml
-  notify: restart ds agent
+  notify: restart datastax agent
