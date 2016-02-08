@@ -25,9 +25,20 @@
   notify: reload firewalld
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" and options.listen_interface != options.broadcast_interface
 
+- name: Set firewalld to allow cluster access from external IPs
+  shell: firewall-cmd --permanent --zone=$(firewall-cmd --get-default-zone) --add-rich-rule='rule family="ipv4" source address="{{ item }}" accept'
+  with_items: cloud_config.allowed_external_ips
+  notify: reload firewalld
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+
 - name: Set UFW rules between cluster nodes
   ufw: rule=allow src={{ hostvars[item.0][['ansible_', hostvars[item.0]['options'][item.1]]|join]['ipv4']['address'] }}
   with_nested:
     - play_hosts
     - ['listen_interface', 'rpc_interface']
+  when: ansible_distribution == "Ubuntu"
+
+- name: Set UFW to allow cluster access from external IPs
+  ufw: rule=allow src={{ item }}
+  with_items: cloud_config.allowed_external_ips
   when: ansible_distribution == "Ubuntu"
