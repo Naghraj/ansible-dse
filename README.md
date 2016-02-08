@@ -19,9 +19,12 @@ Instructions:
      dserepouser: 'user'
      dserepopass: 'pass'
 
-    if necessary replace these with your internal and external net device names
-     external_int: 'eth0'
-     internal_int: 'eth1'
+    replace the listen_interface, broadcast_interface and rpc_interface with the required net device names
+     listen_interface: 'eth1'
+     broadcast_interface: 'eth0'
+     rpc_interface: 'eth1'
+
+    for multi-region deployments, broadcast_interface must be set to a reachable interface from the other regions
 
     JMX is not currently enabled in the code but here for future use
      jmxuser: cassandra
@@ -33,13 +36,13 @@ bash dse-dedicated.sh
 
 To provision Rackspace public cloud use these steps:
 
-To customize, change the variables under `playbooks/group_vars/cassandra-nodes`:
+To customize, change the variables under `playbooks/group_vars/all`:
 
-modify `cloud_nodes_count` to control the number of nodes in your cluster
+modify the variables under `cloud` to control the number and flavor of nodes in your cluster
 
 ## [Requirements] (id:requirements)
 
-- Ansible >= 1.9.2
+- Ansible >= 2.0.1
 
 - Expects CentOS 7
 
@@ -56,17 +59,20 @@ modify `cloud_nodes_count` to control the number of nodes in your cluster
   
   This file will be referenced in `playbooks/group_vars/all` (the `rax_credentials_file` variable).
 
-  By default, the file is expected to be: `~/.raxpub`
+  By default, the file is expected to be: `~/.raxpub` and if you use LON, `~/.raxpub-uk` must also be set.
+
+  You can specify your own script path by setting `RAX_CREDS_FILE` and `RAX_LON_CREDS_FILE` environment variables.
 
 ## [Scripts] (id:scripts)
 
-To provision a cloud environment, run the `provision_rax.sh` script after you've customized the variables under:
+To provision a cloud environment, run the `provision_cloud.sh` script after you've customized the variables under:
 
 ````
-bash provision_rax.sh
+bash provision_cloud.sh
 ````
 ```
-bash dse-rax.sh
+bash bootstrap.sh
+bash dse.sh
 ```
 
 ## [Additionally] (id:additionally)

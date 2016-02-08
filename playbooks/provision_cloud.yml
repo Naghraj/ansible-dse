@@ -1,0 +1,11 @@
+---
+- name: "Build cloud infrastructure"
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: "Build Rackspace Servers"
+      include: provision_rax.yml
+      when: item.options.cloud is defined and item.options.cloud.nodes_count > 0
+      with_items:
+        - "{{ topology }}"

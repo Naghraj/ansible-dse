@@ -1,20 +1,22 @@
----
-- name: Load OS specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_os_family|lower }}.yml"
-        - defaults.yml
-      paths:
-        - ../vars
+- name: Install DSE packages (yum)
+  yum:
+    name: item
+    update_cache: yes
+    state: installed
+  with_items:
+    - dse-full
+    - datastax-agent
+  when: ansible_os_family == "RedHat"
 
-- name: Install DSE
-  action: "{{ package_info.pkg_mgr }}"
-  args: package_info.args
-  with_items: package_info.pkgs
-  when: package_info.pkgs|length > 0
-  tags:
-    - packages
+- name: Install DSE packages (apt)
+  apt:
+    name: item
+    update_cache: yes
+    state: installed
+  with_items:
+    - dse-full
+    - datastax-agent
+  when: ansible_os_family == "Debian"
 
 - name: Reload systemd
   sudo: yes

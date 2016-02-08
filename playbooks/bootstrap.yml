@@ -1,0 +1,31 @@
+---
+- name: "Add nodes to required groups"
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: "Add all nodes to dse-cluster group"
+      include: add_nodes.yml
+      to_group: "dse-cluster"
+      when: (outer_loop is defined and outer_loop.options.group) or item.options.group
+      with_items:
+        - "{{ topology }}"
+
+- name: "Show debug info"
+  hosts: dse-cluster
+  sudo: yes
+  sudo_user: root
+  remote_user: root
+  tasks:
+    - name: "Show dse-cluster info"
+      debug: var=hostvars[inventory_hostname]
+      when: debug
+
+- name: "Apply the common role to all nodes"
+  hosts: dse-cluster
+  any_errors_fatal: true
+  sudo: yes
+  sudo_user: root
+  remote_user: root
+  roles:
+    - common

@@ -1,21 +1,33 @@
 ---
-- name: Load OS specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - files:
-        - "{{ ansible_os_family|lower }}.yml"
-        - defaults.yml
-      paths:
-        - ../vars
+- name: Install OpsCenter (yum)
+  yum:
+    name: item
+    update_cache: yes
+    state: installed
+  with_items:
+    - opscenter
+  when: ansible_os_family == "RedHat"
 
-- name: Install OpsCenter
-  action: "{{ package_info.pkg_mgr }}"
-  args: package_info.args
-  tags:
-    - packages
+- name: Install OpsCenter (apt)
+  apt:
+    name: item
+    update_cache: yes
+    state: installed
+  with_items:
+    - opscenter
+  when: ansible_os_family == "Debian"
 
 - name: start opscenter
   service: name=opscenterd state=started
+  register: opscenter_status
+
+- name: Pause if OpsCenter was restarted
+  pause: seconds=30
+  when: opscenter_status.changed
+
+- name: restart DataStax Agent
+  service: name=datastax-agent state=restarted enabled=yes
+  when: opscenter_status.changed
 
 - name: upload cluster definition
   template: src=cluster_def.j2 dest=/tmp/cluster_def mode=0644
@@ -30,9 +42,11 @@
 
 - name: register cluster in opscenter
   uri:
-    url=http://{{ opscenter_uri }}:8888/cluster-configs
+    url=http://{{ ansible_fqdn }}:8888/cluster-configs
     method=POST
     body='{{ cluster_def.content | b64decode }}'
+    body_format=json
+    timeout=120
     status_code=201
   register: cluster
   tags:
@@ -41,7 +55,7 @@
 
 #- name: login to opscenter and get session 
 #  uri:
-#    url: {{ opscenter_uri }}/opscenter/index.html
+#    url: {{ ansible_fqdn }}/opscenter/index.html
 #    method: POST
 #    user: {{ opscenter_user }}
 #    password: {{ opscenter_pass }}

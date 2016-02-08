@@ -7,7 +7,12 @@
 
 - name: put cassandra yaml template in place 
   template: src=cassandra_yaml.j2 dest=/etc/dse/cassandra/cassandra.yaml owner=cassandra group=cassandra
-  
+  notify: restart dse
+
+- name: put cassandra rackdc template in place
+  template: src=cassandra-rackdc.properties.j2 dest=/etc/dse/cassandra/cassandra-rackdc.properties owner=cassandra group=cassandra
+  notify: restart dse
+
 - name: allow jmx to listen for remote connections
   lineinfile: dest=/etc/dse/cassandra/cassandra-env.sh regexp='^LOCAL_JMX=no' line='LOCAL_JMX=yes' backrefs=yes
 

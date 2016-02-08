@@ -1,6 +1,0 @@
-topology:
-    - dc_name: CLOUD{{ item }}
-      racks:
-          - rack_name: c1
-            nodes:
-                - broadcast_address: {{ ansible_{{ cluster_interface }}['ipv4']['address'] }}

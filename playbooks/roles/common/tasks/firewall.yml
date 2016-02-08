@@ -1,24 +1,33 @@
 ---
-- name: move external interface to proper zone
-  command: firewall-cmd --zone=external --change-interface='{{ external_int }}'
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
-
-- name: move internal interface to proper zone
-  command: firewall-cmd --zone=internal --change-interface='{{ internal_int  }}'
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
-
-- name: setup firewalld external allows
-  command: firewall-cmd --permanent --zone=external --add-rich-rule='rule family="ipv4" source address="{{ hostvars[item][['ansible_', hostvars[item]['cluster_interface']]|join]['ipv4']['address'] }}" accept'
-  with_items: play_hosts
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
-
-- name: setup firewalld internal allows
-  command: firewall-cmd --permanent --zone=internal --add-rich-rule='rule family="ipv4" source address="{{ hostvars[item][['ansible_', hostvars[item]['cluster_interface']]|join]['ipv4']['address'] }}" accept'
-  with_items: play_hosts
+- name: Set firewalld rules between cluster nodes
+  shell: firewall-cmd --permanent --zone=$(firewall-cmd --get-default-zone) --add-rich-rule='rule family="ipv4" source address="{{ hostvars[item.0][['ansible_', hostvars[item.0]['options'][item.1]]|join]['ipv4']['address'] }}" accept'
+  with_nested:
+    - play_hosts
+    - ['listen_interface', 'broadcast_interface', 'rpc_interface']
   notify: reload firewalld
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
-- name: Set UFW rules between cluster nodes
-  ufw: rule=allow src={{ hostvars[item][['ansible_', hostvars[item]['cluster_interface']]|join]['ipv4']['address'] }}
+- name: Set firewalld NAT rules between cluster nodes
+  shell: firewall-cmd --permanent --zone=$(firewall-cmd --get-default-zone) --add-rich-rule='rule family="ipv4" source address="{{ hostvars[item][['ansible_', hostvars[item]['options']['broadcast_interface']]|join]['ipv4']['address'] }}" forward-port port=7000 protocol="tcp" to-port="7000" to-addr="{{ hostvars[inventory_hostname][['ansible_', hostvars[inventory_hostname]['options']['listen_interface']]|join]['ipv4']['address'] }}"'
   with_items: play_hosts
+  notify: reload firewalld
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" and options.listen_interface != options.broadcast_interface
+
+- name: Set firewalld NAT rules between cluster nodes (for rpc)
+  shell: firewall-cmd --permanent --zone=$(firewall-cmd --get-default-zone) --add-rich-rule='rule family="ipv4" source address="{{ hostvars[item][['ansible_', hostvars[item]['options']['broadcast_interface']]|join]['ipv4']['address'] }}" forward-port port=9042 protocol="tcp" to-port="9042" to-addr="{{ hostvars[inventory_hostname][['ansible_', hostvars[inventory_hostname]['options']['listen_interface']]|join]['ipv4']['address'] }}"'
+  with_items: play_hosts
+  notify: reload firewalld
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" and options.rpc_interface != options.broadcast_interface
+
+- name: Set firewalld masquerade rules between cluster nodes
+  shell: firewall-cmd --permanent --add-masquerade --zone={{ item }}
+  with_items: ['$(firewall-cmd --get-default-zone)', 'internal', 'external']
+  notify: reload firewalld
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" and options.listen_interface != options.broadcast_interface
+
+- name: Set UFW rules between cluster nodes
+  ufw: rule=allow src={{ hostvars[item.0][['ansible_', hostvars[item.0]['options'][item.1]]|join]['ipv4']['address'] }}
+  with_nested:
+    - play_hosts
+    - ['listen_interface', 'rpc_interface']
   when: ansible_distribution == "Ubuntu"

@@ -22,7 +22,7 @@ cluster_name: '{{ cluster_name }}'
 #
 # If you already have a cluster with 1 token per node, and wish to migrate to 
 # multiple tokens per node, see http://wiki.apache.org/cassandra/Operations
-num_tokens: {{ tokens }}
+num_tokens: {{ options.tokens }}
 
 # initial_token allows you to specify tokens manually.  While you can use # it with
 # vnodes (num_tokens > 1, above) -- in which case you should provide a 
@@ -277,9 +277,9 @@ seed_provider:
       parameters:
           # seeds is actually a comma-delimited list of addresses.
           # Ex: "<ip1>,<ip2>,<ip3>"
-          - seeds: "{% for seed in groups['dse-cluster'] -%}
-          {{ hostvars[seed][['ansible_', hostvars[seed]['cluster_interface']]|join]['ipv4']['address'] }}
-          {%- if not loop.last %}, {% endif -%}
+          - seeds: "{% for seed in groups['dse-seeds'] -%}
+          {{ hostvars[seed]["ansible_"~options.broadcast_interface]['ipv4']['address'] }}
+          {%- if not loop.last %},{% endif -%}
           {%- endfor %}"
 
 # For workloads with more data than can fit in memory, Cassandra's
@@ -393,13 +393,16 @@ ssl_storage_port: 7001
 # you can specify which should be chosen using listen_interface_prefer_ipv6. If false the first ipv4
 # address will be used. If true the first ipv6 address will be used. Defaults to false preferring
 # ipv4. If there is only one address it will be selected regardless of ipv4/ipv6.
-listen_interface: {{ external_int }}
+listen_address: {{ hostvars[inventory_hostname]["ansible_"~options.listen_interface]['ipv4']['address'] }}
 # listen_interface: eth0
 # listen_interface_prefer_ipv6: false
 
 # Address to broadcast to other Cassandra nodes
 # Leaving this blank will set it to the same value as listen_address
 # broadcast_address: 1.2.3.4
+{% if options.listen_interface != options.broadcast_interface -%}
+broadcast_address: {{ hostvars[inventory_hostname]["ansible_"~options.broadcast_interface]['ipv4']['address'] }}
+{% endif %}
 
 # Internode authentication backend, implementing IInternodeAuthenticator;
 # used to allow/disallow connections from peer nodes.
@@ -451,7 +454,7 @@ start_rpc: true
 # you can specify which should be chosen using rpc_interface_prefer_ipv6. If false the first ipv4
 # address will be used. If true the first ipv6 address will be used. Defaults to false preferring
 # ipv4. If there is only one address it will be selected regardless of ipv4/ipv6.
-rpc_interface: {{ cluster_interface }}
+rpc_address: {{ hostvars[inventory_hostname]["ansible_"~options.rpc_interface]['ipv4']['address'] }}
 # rpc_interface: eth1
 # rpc_interface_prefer_ipv6: false
 
@@ -462,7 +465,9 @@ rpc_port: 9160
 # be set to 0.0.0.0. If left blank, this will be set to the value of
 # rpc_address. If rpc_address is set to 0.0.0.0, broadcast_rpc_address must
 # be set.
-broadcast_rpc_address:  {{ hostvars[inventory_hostname]['ansible_' + cluster_interface]['ipv4']['address'] }}
+{% if options.rpc_interface != options.broadcast_interface -%}
+broadcast_rpc_address: {{ hostvars[inventory_hostname]["ansible_"~options.broadcast_interface]['ipv4']['address'] }}
+{% endif %}
 
 # enable or disable keepalive on rpc/native connections
 rpc_keepalive: true
@@ -704,7 +709,7 @@ cross_node_timeout: false
 #
 # You can use a custom Snitch by setting this to the full class name
 # of the snitch, which will be assumed to be on your classpath.
-endpoint_snitch: com.datastax.bdp.snitch.DseSimpleSnitch
+endpoint_snitch: GossipingPropertyFileSnitch
 
 # controls how often to perform the more expensive part of host score
 # calculation

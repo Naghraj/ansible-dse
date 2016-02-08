@@ -1,11 +1,4 @@
-package_info:
-  pkg_mgr: apt
-  args:
-    name: "{{ item }}"
-    update_cache: yes
-    cache_valid_time: 600
-    state: present
-  pkgs:
+packages:
     - openjdk-7-jdk
     - python-simplejson
     - python-httplib2
@@ -21,14 +14,6 @@ package_info:
     - curl
     - wget
     - ifenslave
-
-update_info:
-  pkg_mgr: apt
-  args:
-    upgrade: dist
-    update_cache: yes
-    cache_valid_time: 600
-    state: latest
 
 update_grub: "/usr/sbin/update-grub"
 

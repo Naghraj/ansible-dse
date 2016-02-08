@@ -1,9 +1,4 @@
-package_info:
-  pkg_mgr: yum
-  args:
-    name: "{{ item }}"
-    state: present
-  pkgs:
+packages:
     - java-1.8.0-openjdk-devel
     - python-httplib2
     - sysstat
@@ -17,13 +12,6 @@ package_info:
     - ntpdate
     - chrony
     - nmap-ncat
-
-update_info:
-  pkg_mgr: yum
-  args:
-    pkg: "*"
-    state: latest
-    update_cache: yes
 
 update_grub: 'grub2-mkconfig -o "$(readlink -n /etc/grub2.cfg)"'
 

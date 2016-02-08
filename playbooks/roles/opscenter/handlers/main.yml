@@ -1,3 +1,6 @@
 ---
 - name: restart datastax-agent
   service: name=datastax-agent state=restarted
+
+- name: sleep
+  pause: seconds=30

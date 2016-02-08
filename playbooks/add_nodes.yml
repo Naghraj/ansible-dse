@@ -1,0 +1,32 @@
+- set_fact: outer_loop="{{ item }}"
+
+- add_host:
+    name: "{{ hostvars[item].inventory_hostname }}"
+    ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
+    groups: "dse-cluster"
+    dc_name: "{{ outer_loop.dc_name }}"
+    options: "{{ outer_loop.options }}"
+  with_items: "{{ groups[outer_loop.options.group] }}"
+  tags:
+    - always
+
+- add_host:
+    name: "{{ hostvars[item].inventory_hostname }}"
+    ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
+    groups: "dse-seeds"
+    dc_name: "{{ outer_loop.dc_name }}"
+    options: "{{ outer_loop.options }}"
+  with_items: "{{ groups[outer_loop.options.group]|sort|slice(2)|list|first }}"
+  tags:
+    - always
+
+- add_host:
+    name: "{{ hostvars[item].inventory_hostname }}"
+    ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
+    groups: "opscenter-node"
+    dc_name: "{{ outer_loop.dc_name }}"
+    options: "{{ outer_loop.options }}"
+  with_items: "{{ groups[outer_loop.options.group]|sort|list|first }}"
+  when: "{{ outer_loop.dc_name == opscenter_dc }}"
+  tags:
+    - always
