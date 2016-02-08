@@ -9,3 +9,9 @@
       when: item.options.cloud is defined and item.options.cloud.nodes_count > 0
       with_items:
         - "{{ topology }}"
+
+    - name: "Build Rackspace CBS"
+      include: provision_cbs.yml
+      when: ((outer_loop is defined and outer_loop.options.cloud) or item.options.cloud is defined) and ((outer_loop is defined and outer_loop.options.cloud.nodes_count > 0) or item.options.cloud.nodes_count > 0) and ((outer_loop is defined and outer_loop.options.cbs.build_cbs) or item.options.cbs.build_cbs)
+      with_items:
+        - "{{ topology }}"

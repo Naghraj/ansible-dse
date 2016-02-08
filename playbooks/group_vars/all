@@ -22,6 +22,7 @@ topology:
     options:
       tokens: 256
       group: 'dse-c-iad'
+      data_disks_devices: ['xvde']
       listen_interface: 'eth1'
       broadcast_interface: 'eth0'
       rpc_interface: 'eth1'
@@ -30,11 +31,16 @@ topology:
         nodes_count: 3
         image: 'CentOS 7 (PVHVM)'
         flavor: 'general1-8'
+      cbs:
+        build_cbs: false
+        disks_size: 100
+        disks_type: 'SSD'
 
   - dc_name: DC2
     options:
       tokens: 256
       group: 'dse-sa-dfw'
+      data_disks_devices: []
       listen_interface: 'eth1'
       broadcast_interface: 'eth0'
       rpc_interface: 'eth0'
@@ -43,11 +49,16 @@ topology:
         nodes_count: 0
         image: 'CentOS 7 (PVHVM)'
         flavor: 'general1-8'
+      cbs:
+        build_cbs: false
+        disks_size: 100
+        disks_type: 'SSD'
 
   - dc_name: DC3
     options:
       tokens: 256
       group: 'dse-c-lon'
+      data_disks_devices: ['sdb']
       listen_interface: 'bond0'
       broadcast_interface: 'bond0'
       rpc_interface: 'bond0'
