@@ -40,6 +40,16 @@
   tags:
     - cluster_create
 
+- name: Check if cluster config already exists
+  uri:
+    url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
+    method=GET
+    status_code=200,201,202,404
+    return_content=yes
+  register: current_config
+  tags:
+    - cluster_create
+
 - name: register cluster in opscenter
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs
@@ -48,10 +58,25 @@
     body_format=json
     timeout=120
     status_code=201
+  when: current_config.status==404
   register: cluster
+  notify: restart datastax-agent  
   tags:
     - cluster_create
-  notify: restart datastax-agent  
+
+- name: Update cluster config in opscenter
+  uri:
+    url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
+    method=PUT
+    body='{{ cluster_def.content | b64decode }}'
+    body_format=json
+    timeout=120
+    status_code=204
+  when: current_config.status==200
+  register: cluster
+  notify: restart datastax-agent
+  tags:
+    - cluster_create
 
 #- name: login to opscenter and get session 
 #  uri:
