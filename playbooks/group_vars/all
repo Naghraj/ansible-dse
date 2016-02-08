@@ -20,6 +20,8 @@ cloud_config:
 topology:
   - dc_name: DC1
     options:
+      workloads:
+        - cassandra
       tokens: 256
       group: 'dse-c-iad'
       data_disks_devices: ['xvde']
@@ -38,6 +40,9 @@ topology:
 
   - dc_name: DC2
     options:
+      workloads:
+        - search
+        - analytics
       tokens: 256
       group: 'dse-sa-dfw'
       data_disks_devices: []
@@ -56,6 +61,8 @@ topology:
 
   - dc_name: DC3
     options:
+      workloads:
+        - cassandra
       tokens: 256
       group: 'dse-c-lon'
       data_disks_devices: ['sdb']
