@@ -19,15 +19,9 @@
 
 - name: start opscenter
   service: name=opscenterd state=started
-  register: opscenter_status
+  notify: sleep
 
-- name: Pause if OpsCenter was restarted
-  pause: seconds=30
-  when: opscenter_status.changed
-
-- name: restart DataStax Agent
-  service: name=datastax-agent state=restarted enabled=yes
-  when: opscenter_status.changed
+- meta: flush_handlers
 
 - name: upload cluster definition
   template: src=cluster_def.j2 dest=/tmp/cluster_def mode=0644
@@ -60,7 +54,7 @@
     status_code=201
   when: current_config.status==404
   register: cluster
-  notify: restart datastax-agent  
+  notify: restart datastax-agent
   tags:
     - cluster_create
 
