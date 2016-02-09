@@ -6,9 +6,13 @@
 
 - name: restart dse
   service: name=dse state=restarted
+  notify: sleep
 
 - name: restart datastax agent
   service: name=datastax-agent state=restarted
 
 - name: Gather facts
   action: setup
+
+- name: sleep
+  pause: seconds=30
