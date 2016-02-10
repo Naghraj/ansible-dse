@@ -6,7 +6,7 @@
   template: src=jmxremote_passwd.j2 dest=/etc/cassandra/jmxremote.password owner=cassandra group=cassandra mode=0400
 
 - name: put cassandra yaml template in place 
-  template: src=cassandra_yaml.j2 dest=/etc/dse/cassandra/cassandra.yaml owner=cassandra group=cassandra
+  template: src=cassandra.yaml.j2 dest=/etc/dse/cassandra/cassandra.yaml owner=cassandra group=cassandra
   notify: restart dse
 
 - name: put cassandra rackdc template in place
