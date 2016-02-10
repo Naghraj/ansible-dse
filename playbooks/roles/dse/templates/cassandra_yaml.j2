@@ -465,9 +465,7 @@ rpc_port: 9160
 # be set to 0.0.0.0. If left blank, this will be set to the value of
 # rpc_address. If rpc_address is set to 0.0.0.0, broadcast_rpc_address must
 # be set.
-{% if options.rpc_interface != options.broadcast_interface -%}
-broadcast_rpc_address: {{ hostvars[inventory_hostname]["ansible_"~options.broadcast_interface]['ipv4']['address'] }}
-{% endif %}
+# broadcast_rpc_address: 1.2.3.4
 
 # enable or disable keepalive on rpc/native connections
 rpc_keepalive: true
