@@ -23,7 +23,3 @@
 - name: turn off jmx auth
   lineinfile: dest=/etc/dse/cassandra/cassandra-env.sh regexp='jmxremote.authenticate=true' line='  JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.authenticate=false"' backrefs=yes
   notify: restart dse
-
-- name: set datastax opscenter IP for agent 
-  template: src=ds-agent-address_yaml dest=/var/lib/datastax-agent/conf/address.yaml
-  notify: restart datastax agent
