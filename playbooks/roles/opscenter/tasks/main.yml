@@ -7,6 +7,7 @@
   with_items:
     - opscenter
   when: ansible_os_family == "RedHat"
+  notify: restart opscenter
 
 - name: Install OpsCenter (apt)
   apt:
@@ -16,10 +17,7 @@
   with_items:
     - opscenter
   when: ansible_os_family == "Debian"
-
-- name: start opscenter
-  service: name=opscenterd state=started
-  notify: sleep
+  notify: restart opscenter
 
 - meta: flush_handlers
 

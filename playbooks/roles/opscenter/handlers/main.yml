@@ -1,3 +1,7 @@
 ---
 - name: sleep
   pause: seconds=30
+
+- name: restart opscenter
+  service: name=opscenterd state=restarted
+  notify: sleep
