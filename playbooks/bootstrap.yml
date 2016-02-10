@@ -6,8 +6,7 @@
   tasks:
     - name: "Add all nodes to dse-cluster group"
       include: add_nodes.yml
-      to_group: "dse-cluster"
-      when: (outer_loop is defined and outer_loop.options.group) or item.options.group
+      when: ((outer_loop is defined and outer_loop.options.group) or item.options.group) and ((outer_loop is defined and groups[outer_loop.options.group]|length > 0) or groups[item.options.group]|length > 0)
       with_items:
         - "{{ topology }}"
 
