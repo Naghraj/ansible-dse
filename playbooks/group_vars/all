@@ -41,7 +41,7 @@ topology:
       workloads:
         - search
         - analytics
-      tokens: 256
+      tokens: 64
       group: 'dse-sa-dfw'
       data_disks_devices: []
       listen_interface: 'eth1'
@@ -61,7 +61,8 @@ topology:
     options:
       workloads:
         - cassandra
-      tokens: 256
+        - analytics
+      tokens: 64
       group: 'dse-c-static'
       data_disks_devices: ['sdb']
       listen_interface: 'bond0'
