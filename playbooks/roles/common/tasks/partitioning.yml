@@ -1,0 +1,12 @@
+---
+- name: Partition data disks
+  shell: parted -s -a optimal /dev/{{ item }} mklabel gpt mkpart primary xfs 2048s 100% && sleep 2 && partprobe /dev/{{ item }}
+  when: ansible_devices[item]['partitions'] == {}
+  with_items: options.data_disks_devices
+
+- name: Create the filesystem on data disks
+  filesystem: dev="/dev/{{ item }}1" fstype="xfs"
+  with_items: options.data_disks_devices
+
+- name: Mount data disk under {{ options.data_base_path }}
+  mount: state=mounted src="/dev/{{ options.data_disks_devices[0] }}1" name="{{ options.data_base_path }}" fstype=xfs opts=defaults,noatime dump=0 passno=0

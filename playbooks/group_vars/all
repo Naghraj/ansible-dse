@@ -23,6 +23,7 @@ topology:
       tokens: 256
       group: 'dse-c-iad'
       data_disks_devices: ['xvde']
+      data_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'
       broadcast_interface: 'eth0'
       rpc_interface: 'eth1'
@@ -32,7 +33,7 @@ topology:
         image: 'CentOS 7 (PVHVM)'
         flavor: 'general1-8'
       cbs:
-        build_cbs: false
+        build_cbs: true
         disks_size: 100
         disks_type: 'SSD'
 
@@ -44,6 +45,7 @@ topology:
       tokens: 64
       group: 'dse-sa-dfw'
       data_disks_devices: []
+      data_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'
       broadcast_interface: 'eth0'
       rpc_interface: 'eth0'
@@ -65,6 +67,7 @@ topology:
       tokens: 64
       group: 'dse-c-static'
       data_disks_devices: ['sdb']
+      data_base_path: "/var/lib/cassandra"
       listen_interface: 'bond0'
       broadcast_interface: 'bond0'
       rpc_interface: 'bond0'

@@ -105,6 +105,9 @@
   tags:
     - firewall
 
+- include: partitioning.yml
+  when: options.data_disks_devices is defined and options.data_disks_devices and options.data_base_path is defined and options.data_base_path
+
 - name: Upload Datastax Repo
   template: src={{ datastax_repo }} dest={{ datastax_repo_file }} mode=0644
   tags:
