@@ -19,6 +19,10 @@
   when: ansible_os_family == "Debian"
   notify: restart opscenter
 
+- name: Update OpsCenter configuration
+  template: src=opscenterd.conf.j2 dest=/etc/opscenter/opscenterd.conf owner=opscenter group=opscenter
+  notify: restart opscenter
+
 - meta: flush_handlers
 
 - name: upload cluster definition
@@ -48,7 +52,7 @@
     method=POST
     body='{{ cluster_def.content | b64decode }}'
     body_format=json
-    timeout=120
+    timeout={{ opscenter_config.add_cluster_timeout }}
     status_code=201
   when: current_config.status==404
   register: cluster
@@ -61,7 +65,7 @@
     method=PUT
     body='{{ cluster_def.content | b64decode }}'
     body_format=json
-    timeout=120
+    timeout={{ opscenter_config.add_cluster_timeout }}
     status_code=204
   when: current_config.status==200
   register: cluster
