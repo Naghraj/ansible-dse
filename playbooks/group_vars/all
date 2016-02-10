@@ -62,7 +62,7 @@ topology:
       workloads:
         - cassandra
       tokens: 256
-      group: 'dse-c-lon'
+      group: 'dse-c-static'
       data_disks_devices: ['sdb']
       listen_interface: 'bond0'
       broadcast_interface: 'bond0'
