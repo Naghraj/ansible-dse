@@ -54,7 +54,6 @@
     status_code=201
   when: current_config.status==404
   register: cluster
-  notify: restart datastax-agent
   tags:
     - cluster_create
 
@@ -68,7 +67,6 @@
     status_code=204
   when: current_config.status==200
   register: cluster
-  notify: restart datastax-agent
   tags:
     - cluster_create
 

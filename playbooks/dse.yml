@@ -27,3 +27,14 @@
     - opscenter
   tags:
     - opscenter
+
+- name: "Restart the datastax-agent on all nodes"
+  hosts: dse-cluster
+  any_errors_fatal: true
+  sudo: yes
+  sudo_user: root
+  remote_user: root
+  gather_facts: False
+  tasks:
+    - name: "Restart the datastax-agent service"
+      service: name=datastax-agent state=restarted
