@@ -1,11 +1,5 @@
 ---
-- name: ensure config path exists
-  file: path=/etc/cassandra state=directory
-
-- name: put jmx password template in place
-  template: src=jmxremote_passwd.j2 dest=/etc/cassandra/jmxremote.password owner=cassandra group=cassandra mode=0400
-
-- name: put cassandra yaml template in place 
+- name: put cassandra yaml template in place
   template: src=cassandra.yaml.j2 dest=/etc/dse/cassandra/cassandra.yaml owner=cassandra group=cassandra
   notify: restart dse
 
@@ -15,11 +9,4 @@
 
 - name: put dse template in place
   template: src=dse.j2 dest=/etc/default/dse owner=cassandra group=cassandra
-  notify: restart dse
-
-- name: allow jmx to listen for remote connections
-  lineinfile: dest=/etc/dse/cassandra/cassandra-env.sh regexp='^LOCAL_JMX=no' line='LOCAL_JMX=yes' backrefs=yes
-
-- name: turn off jmx auth
-  lineinfile: dest=/etc/dse/cassandra/cassandra-env.sh regexp='jmxremote.authenticate=true' line='  JVM_OPTS="$JVM_OPTS -Dcom.sun.management.jmxremote.authenticate=false"' backrefs=yes
   notify: restart dse

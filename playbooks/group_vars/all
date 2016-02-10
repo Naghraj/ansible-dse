@@ -3,8 +3,6 @@ cluster_name: testcluster
 dserepouser: 'user'
 dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'
-jmxuser: cassandra
-jmxpass: cassandra
 opscenter_dc: 'DC1'
 
 # set to true to show host variables
