@@ -19,6 +19,8 @@
   when: ansible_os_family == "Debian"
   notify: restart opscenter
 
+- meta: flush_handlers
+
 - name: Update OpsCenter configuration
   template: src=opscenterd.conf.j2 dest=/etc/opscenter/opscenterd.conf owner=opscenter group=opscenter
   notify: restart opscenter

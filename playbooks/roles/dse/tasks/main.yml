@@ -17,6 +17,8 @@
     - dse-full
   when: ansible_os_family == "Debian"
 
+- meta: flush_handlers
+
 - include: config.yml
   tags:
     - configuration
