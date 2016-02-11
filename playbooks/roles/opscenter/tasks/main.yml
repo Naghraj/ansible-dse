@@ -20,16 +20,16 @@
 
 - meta: flush_handlers
 
-- name: Make sure OpsCenter is running
-  service: name=opscenterd state=started enabled=yes
-  tags:
-    - services
-
 - name: Update OpsCenter configuration
   template: src=opscenterd.conf.j2 dest=/etc/opscenter/opscenterd.conf
   notify: restart opscenter
 
 - meta: flush_handlers
+
+- name: Make sure OpsCenter is running
+  service: name=opscenterd state=started enabled=yes
+  tags:
+    - services
 
 - name: upload cluster definition
   template: src=cluster_def.j2 dest=/tmp/cluster_def mode=0644
