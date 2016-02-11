@@ -10,7 +10,7 @@
       with_items:
         - "{{ topology }}"
 
-- name: "Apply the dse and datastax-agent roles to all nodes"
+- name: "Apply the dse role to all cluster nodes"
   hosts: dse-cluster
   any_errors_fatal: true
   sudo: yes
@@ -18,7 +18,6 @@
   remote_user: root
   roles:
     - dse
-    - datastax-agent
 
 - name: "Apply the opscenter role to the opscenter group"
   hosts: opscenter-node
@@ -32,13 +31,11 @@
   tags:
     - opscenter
 
-- name: "Restart the datastax-agent on all nodes"
+- name: "Apply the datastax-agent role to all cluster nodes"
   hosts: dse-cluster
   any_errors_fatal: true
   sudo: yes
   sudo_user: root
   remote_user: root
-  gather_facts: False
-  tasks:
-    - name: "Restart the datastax-agent service"
-      service: name=datastax-agent state=restarted
+  roles:
+    - datastax-agent
