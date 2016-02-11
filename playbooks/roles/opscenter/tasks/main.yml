@@ -38,11 +38,13 @@
 
 - name: Slurp the config for {{ cluster_name }}
   slurp: src=/tmp/cluster_def
-  register: cluster_def
+  register: cluster_def_b64
   tags:
     - cluster_create
 
-- name: Check if the config for {{ cluster_name }} already exists
+- set_fact: cluster_def="{{ cluster_def_b64.content|b64decode }}"
+
+- name: Check if a config for {{ cluster_name }} already exists
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
     method=GET
@@ -56,7 +58,7 @@
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs
     method=POST
-    body='{{ cluster_def.content | b64decode }}'
+    body={{ cluster_def }}
     body_format=json
     timeout={{ opscenter_config.add_cluster_timeout }}
     status_code=201
@@ -69,11 +71,11 @@
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
     method=PUT
-    body='{{ cluster_def.content | b64decode }}'
+    body={{ cluster_def }}
     body_format=json
     timeout={{ opscenter_config.add_cluster_timeout }}
     status_code=204
-  when: current_config.status==200
+  when: current_config.status==200 and cluster_def != current_config.json
   register: cluster
   tags:
     - cluster_create
