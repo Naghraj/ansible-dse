@@ -8,7 +8,7 @@
 
 # enable this to start Hadoop's JobTracker and/or TaskTrackers on this machine.
 # If left disabled, this will act as a regular Cassandra node.
-HADOOP_ENABLED=0
+HADOOP_ENABLED={{ 1 if "hadoop" in options.workloads else 0 }}
 
 # enable this to set the replication factor for CFS.  Note that this will only
 # have an effect the first time a cluster is started with HADOOP_ENABLED=1 and
@@ -21,11 +21,11 @@ SOLR_ENABLED={{ "1" if "search" in options.workloads else "0" }}
 
 # enable thist to start Spark integration. If left disabled, this
 # will act as a regular Cassandra node.
-SPARK_ENABLED={{ 1 if "search" in options.workloads else 0 }}
+SPARK_ENABLED={{ 1 if "spark" in options.workloads else 0 }}
 
 # enabled this to start CFS; it is required only if you want to start CFS without
 # Hadoop/Spark trackers.
-CFS_ENABLED={{ 1 if "analytics" in options.workloads else 0 }}
+CFS_ENABLED={{ 1 if "hadoop" in options.workloads else 0 }}
 
 # Install root
 if [ -d /usr/share/dse ]; then
