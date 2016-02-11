@@ -14,6 +14,7 @@ packages:
     - curl
     - wget
     - ifenslave
+    - xfsprogs
 
 update_grub: "/usr/sbin/update-grub"
 
