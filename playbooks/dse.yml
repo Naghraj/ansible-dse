@@ -16,6 +16,10 @@
   sudo: yes
   sudo_user: root
   remote_user: root
+  pre_tasks:
+    - name: "Show debug info"
+      debug: var=hostvars[inventory_hostname]
+      when: debug
   roles:
     - dse
 
@@ -23,6 +27,10 @@
   hosts: opscenter-node
   any_errors_fatal: true
   remote_user: root
+  pre_tasks:
+    - name: "Show debug info"
+      debug: var=hostvars[inventory_hostname]
+      when: debug
   roles:
     - role: opscenter
       opscenter_config:

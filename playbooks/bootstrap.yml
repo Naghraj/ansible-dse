@@ -10,21 +10,15 @@
       with_items:
         - "{{ topology }}"
 
-- name: "Show debug info"
-  hosts: dse-cluster, opscenter-node
-  sudo: yes
-  sudo_user: root
-  remote_user: root
-  tasks:
-    - name: "Show dse-cluster info"
-      debug: var=hostvars[inventory_hostname]
-      when: debug
-
 - name: "Apply the common role to all nodes"
   hosts: dse-cluster, opscenter-node
   any_errors_fatal: true
   sudo: yes
   sudo_user: root
   remote_user: root
+  pre_tasks:
+    - name: "Show debug info"
+      debug: var=hostvars[inventory_hostname]
+      when: debug
   roles:
     - common
