@@ -11,7 +11,7 @@
         - "{{ topology }}"
 
 - name: "Show debug info"
-  hosts: dse-cluster
+  hosts: dse-cluster, opscenter-node
   sudo: yes
   sudo_user: root
   remote_user: root
@@ -21,7 +21,7 @@
       when: debug
 
 - name: "Apply the common role to all nodes"
-  hosts: dse-cluster
+  hosts: dse-cluster, opscenter-node
   any_errors_fatal: true
   sudo: yes
   sudo_user: root

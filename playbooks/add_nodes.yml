@@ -7,6 +7,7 @@
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
   with_items: "{{ groups[outer_loop.options.group] }}"
+  when: "{{ outer_loop.options.group != opscenter_group_name }}"
   tags:
     - always
 
@@ -17,13 +18,14 @@
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
   with_items: "{{ groups[outer_loop.options.group]|sort|slice(2)|list|first }}"
+  when: "{{ outer_loop.options.group != opscenter_group_name }}"
   tags:
     - always
 
 - add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
     ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
-    groups: "opscenter-node"
+    groups: "{{ opscenter_group_name }}"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
   with_items: "{{ groups[outer_loop.options.group]|sort|list|first }}"

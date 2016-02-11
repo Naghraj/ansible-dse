@@ -1,6 +1,6 @@
 127.0.0.1 localhost.localdomain localhost
 ::1 localhost6.localdomain6 localhost6
-{% for node in groups['dse-cluster']|sort %}
+{% for node in play_hosts|sort %}
 {% if dc_name == hostvars[node]['dc_name'] -%}
 {{ hostvars[node]["ansible_"~options.listen_interface]['ipv4']['address'] }} {{ hostvars[node]['ansible_fqdn'] }} {{ hostvars[node]['ansible_hostname'] }}
 {% else -%}

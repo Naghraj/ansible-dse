@@ -3,7 +3,8 @@ cluster_name: testcluster
 dserepouser: 'user'
 dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'
-opscenter_dc: 'DC1'
+opscenter_dc: 'opscenter'
+opscenter_group_name: 'opscenter-node'
 
 # set to true to show host variables
 debug: true
@@ -71,3 +72,17 @@ topology:
       listen_interface: 'bond0'
       broadcast_interface: 'bond0'
       rpc_interface: 'bond0'
+
+  - dc_name: opscenter
+    options:
+      group: "{{ opscenter_group_name }}"
+      data_disks_devices: []
+      data_base_path: "/var/lib/cassandra"
+      listen_interface: 'eth1'
+      broadcast_interface: 'eth0'
+      rpc_interface: 'eth1'
+      cloud:
+        region: 'IAD'
+        nodes_count: 1
+        image: 'CentOS 7 (PVHVM)'
+        flavor: 'general1-2'
