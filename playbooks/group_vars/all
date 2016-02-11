@@ -7,7 +7,7 @@ opscenter_dc: 'opscenter'
 opscenter_group_name: 'opscenter-node'
 
 # set to true to show host variables
-debug: true
+debug: false
 
 cloud_config:
   domain: 'localnet'
