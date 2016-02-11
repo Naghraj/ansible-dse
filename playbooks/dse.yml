@@ -21,7 +21,12 @@
       debug: var=hostvars[inventory_hostname]
       when: debug
   roles:
-    - dse
+    - role: dse
+      dse_config:
+        data_file_directories:
+          - "{{ cassandra_base_path | default('/var/lib/cassandra') }}/data"
+        commitlog_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/commitlog"
+        saved_caches_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/saved_caches"
 
 - name: "Apply the opscenter role to the opscenter group"
   hosts: opscenter-node

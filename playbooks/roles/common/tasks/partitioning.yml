@@ -8,5 +8,5 @@
   filesystem: dev="/dev/{{ item }}1" fstype="xfs"
   with_items: options.data_disks_devices
 
-- name: Mount data disk under {{ options.data_base_path }}
-  mount: state=mounted src="/dev/{{ options.data_disks_devices[0] }}1" name="{{ options.data_base_path }}" fstype=xfs opts=defaults,noatime dump=0 passno=0
+- name: Mount data disk under {{ options.cassandra_base_path }}
+  mount: state=mounted src="/dev/{{ options.data_disks_devices[0] }}1" name="{{ options.cassandra_base_path }}" fstype=xfs opts=defaults,noatime dump=0 passno=0
