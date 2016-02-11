@@ -23,7 +23,7 @@
 
 - meta: flush_handlers
 
-- name: Start DataStax Agent
+- name: Make sure the datastax-agent is running
   service: name=datastax-agent state=started enabled=yes
   tags:
     - services

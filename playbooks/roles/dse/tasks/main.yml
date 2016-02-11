@@ -25,7 +25,7 @@
 
 - meta: flush_handlers
 
-- name: Start DSE service
+- name: Make sure DSE is running
   service: name=dse state=started enabled=yes
   tags:
     - services
