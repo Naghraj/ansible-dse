@@ -1,6 +1,6 @@
 ---
 - name: Partition data disks
-  shell: parted -s -a optimal /dev/{{ item }} mklabel gpt mkpart primary xfs 2048s 100% && sleep 2 && partprobe /dev/{{ item }}
+  shell: parted -s -a optimal /dev/{{ item }} mklabel gpt mkpart primary xfs 2048s 100% && sleep 5 && partprobe /dev/{{ item }}
   when: ansible_devices[item] is defined and ansible_devices[item]['partitions'] == {}
   with_items: options.data_disks_devices
 
