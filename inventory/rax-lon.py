@@ -65,7 +65,7 @@ Configuration:
     inventory plugin is [rax]
 
     [rax]
-    creds_file = ~/.rackspace_cloud_credentials
+    creds_file = ~/.rackspace_lon_cloud_credentials
     regions = IAD,ORD,DFW
     env = prod
     meta_prefix = meta
@@ -76,13 +76,13 @@ Configuration:
     An environment variable will override a configuration file value.
 
     creds_file:
-        Environment Variable: RAX_CREDS_FILE
+        Environment Variable: RAX_LON_CREDS_FILE
 
         An optional configuration that points to a pyrax-compatible credentials
         file.
 
         If not supplied, rax.py will look for a credentials file
-        at ~/.rackspace_cloud_credentials.  It uses the Rackspace Python SDK,
+        at ~/.rackspace_lon_cloud_credentials.  It uses the Rackspace Python SDK,
         and therefore requires a file formatted per the SDK's specifications.
 
         https://github.com/rackspace/pyrax/blob/master/docs/getting_started.md
@@ -130,19 +130,19 @@ Configuration:
 
 Examples:
     List server instances
-    $ RAX_CREDS_FILE=~/.raxpub rax.py --list
+    $ RAX_LON_CREDS_FILE=~/.raxpub rax.py --list
 
     List servers in ORD datacenter only
-    $ RAX_CREDS_FILE=~/.raxpub RAX_REGION=ORD rax.py --list
+    $ RAX_LON_CREDS_FILE=~/.raxpub RAX_REGION=ORD rax.py --list
 
     List servers in ORD and DFW datacenters
-    $ RAX_CREDS_FILE=~/.raxpub RAX_REGION=ORD,DFW rax.py --list
+    $ RAX_LON_CREDS_FILE=~/.raxpub RAX_REGION=ORD,DFW rax.py --list
 
     Get server details for server named "server.example.com"
-    $ RAX_CREDS_FILE=~/.raxpub rax.py --host server.example.com
+    $ RAX_LON_CREDS_FILE=~/.raxpub rax.py --host server.example.com
 
     Use the instance private IP to connect (instead of public IP)
-    $ RAX_CREDS_FILE=~/.raxpub RAX_ACCESS_NETWORK=private rax.py --list
+    $ RAX_LON_CREDS_FILE=~/.raxpub RAX_ACCESS_NETWORK=private rax.py --list
 """
 
 import os
@@ -380,7 +380,7 @@ def parse_args():
 
 
 def setup():
-    default_creds_file = os.path.expanduser('~/.rackspace_cloud_credentials')
+    default_creds_file = os.path.expanduser('~/.rackspace_lon_cloud_credentials')
 
     env = get_config(p, 'rax', 'environment', 'RAX_ENV', None)
     if env:
@@ -390,18 +390,18 @@ def setup():
 
     # Attempt to grab credentials from environment first
     creds_file = get_config(p, 'rax', 'creds_file',
-                            'RAX_CREDS_FILE', None)
+                            'RAX_LON_CREDS_FILE', None)
     if creds_file is not None:
         creds_file = os.path.expanduser(creds_file)
     else:
         # But if that fails, use the default location of
-        # ~/.rackspace_cloud_credentials
+        # ~/.rackspace_lon_cloud_credentials
         if os.path.isfile(default_creds_file):
             creds_file = default_creds_file
         elif not keyring_username:
             sys.stderr.write('No value in environment variable %s and/or no '
                              'credentials file at %s\n'
-                             % ('RAX_CREDS_FILE', default_creds_file))
+                             % ('RAX_LON_CREDS_FILE', default_creds_file))
             sys.exit(1)
 
     identity_type = pyrax.get_setting('identity_type')

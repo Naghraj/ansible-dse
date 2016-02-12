@@ -4,9 +4,12 @@
   command: systemctl daemon-reload
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
+- name: restart dse
+  service: name=dse state=restarted
+  notify: sleep
+
+- name: Gather facts
+  action: setup
+
 - name: sleep
   pause: seconds=30
-
-- name: restart opscenter
-  service: name=opscenterd state=restarted
-  notify: sleep

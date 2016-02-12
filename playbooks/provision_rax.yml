@@ -1,72 +1,55 @@
----
-- name: "Build the environment"
-  hosts: localhost
-  connection: local
-  gather_facts: False
-  tasks:
-    - name: Include cassandra-nodes group variables
-      include_vars: group_vars/cassandra-nodes
+- name: "Create the SSH keypair (LON region)"
+  local_action:
+    module: rax_keypair
+    credentials: "{{ credentials_file_lon }}"
+    name: "{{ cloud_config.ssh.keyname }}"
+    public_key: "{{ lookup('file', cloud_config.ssh.keyfile) }}"
+    region: "{{ item.options.cloud.region }}"
+  when: item.options.cloud.region=="LON"
 
-    - name: Create the SSH keypair
-      local_action:
-        module: rax_keypair
-        credentials: "{{ cloud_config.rax_credentials_file }}"
-        name: "{{ cloud_config.ssh.keyname }}"
-        public_key: "{{ lookup('file', cloud_config.ssh.keyfile) }}"
-        region: "{{ item.value.region }}"
-      with_dict: cluster_opts
+- name: "Create dse nodes for {{ item.dc_name }} dc (LON region)"
+  local_action:
+    module: rax
+    credentials: "{{ credentials_file_lon }}"
+    name: "{{ item.options.group }}-%02d.{{ cloud_config.domain|lower }}"
+    image: "{{ item.options.cloud.image }}"
+    flavor: "{{ item.options.cloud.flavor }}"
+    region: "{{ item.options.cloud.region }}"
+    key_name: "{{ cloud_config.ssh.keyname }}"
+    exact_count: yes
+    auto_increment: true
+    group: "{{ item.options.group }}"
+    state: present
+    count: "{{ item.options.cloud.nodes_count }}"
+    wait: true
+    wait_timeout: 900
+  register: rax_dse_{{ item.options.group|replace("-","_") }}
+  when: item.options.cloud.region=="LON"
 
-    - name: "Create cassandra nodes"
-      local_action:
-        module: rax
-        credentials: "{{ cloud_config.rax_credentials_file }}"
-        name: "dse-%02d.{{ item.value.region}}.{{ cloud_config.domain }}"
-        image: "{{ cloud_image }}"
-        flavor: "{{ cloud_flavor }}"
-        region: "{{ item.value.region }}"
-        key_name: "{{ cloud_config.ssh.keyname }}"
-        exact_count: yes
-        auto_increment: true
-        group: dse-nodes
-        state: present
-        count: "{{ item.value.node_count }}"
-        wait: true
-        wait_timeout: 900
-      with_dict: cluster_opts
-      register: rax_dse
+- name: "Create the SSH keypair (non-LON regions)"
+  local_action:
+    module: rax_keypair
+    credentials: "{{ credentials_file }}"
+    name: "{{ cloud_config.ssh.keyname }}"
+    public_key: "{{ lookup('file', cloud_config.ssh.keyfile) }}"
+    region: "{{ item.options.cloud.region }}"
+  when: item.options.cloud.region!="LON"
 
-
-#Blockstorage needs mult-region support
-    - name: "Create CBS Volumes for cassandra nodes"
-      local_action:
-        module: rax_cbs
-        credentials: "{{ cloud_config.rax_credentials_file }}"
-        name: "{{ item[0].name }}_{{ item[1] }}"
-        volume_type: "{{ cbs_disks_type }}"
-        size: "{{ cbs_disks_size }}"
-        region: "{{ cloud_config.rax_region }}"
-        state: present
-        wait: true
-      with_nested:
-        - rax_dse.instances
-        - data_disks_devices
-      when: cloud_nodes_count > 0 and build_cbs
-
-    - name: "Attach CBS Volumes to cassandra nodes"
-      local_action:
-        module: rax_cbs_attachments
-        credentials: "{{ cloud_config.rax_credentials_file }}"
-        volume: "{{ item[0].name }}_{{ item[1] }}"
-        server: "{{ item[0].id }}"
-        region: "{{ cloud_config.rax_region }}"
-        device: "/dev/{{ item[1] }}"
-        state: present
-        wait: true
-      with_nested:
-        - rax_dse.instances
-        - data_disks_devices
-      when: cloud_nodes_count > 0 and build_cbs
-
-    - name: "Show rax_dse info"
-      debug: var=rax_dse
-      when: debug
+- name: "Create dse nodes for {{ item.dc_name }} dc (non-LON regions)"
+  local_action:
+    module: rax
+    credentials: "{{ credentials_file }}"
+    name: "{{ item.options.group }}-%02d.{{ cloud_config.domain|lower }}"
+    image: "{{ item.options.cloud.image }}"
+    flavor: "{{ item.options.cloud.flavor }}"
+    region: "{{ item.options.cloud.region }}"
+    key_name: "{{ cloud_config.ssh.keyname }}"
+    exact_count: yes
+    auto_increment: true
+    group: "{{ item.options.group }}"
+    state: present
+    count: "{{ item.options.cloud.nodes_count }}"
+    wait: true
+    wait_timeout: 900
+  register: rax_dse_{{ item.options.group|replace("-","_") }}
+  when: item.options.cloud.region!="LON"

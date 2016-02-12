@@ -1,4 +1,0 @@
-
-stomp_interface: {% for host in groups['opscenter-node'] %}
-                   {{ hostvars[host][['ansible_', hostvars[host]['cluster_interface']]|join]['ipv4']['address'] }}
-                 {% endfor %}

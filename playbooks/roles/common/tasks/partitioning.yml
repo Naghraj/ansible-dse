@@ -1,0 +1,14 @@
+---
+- name: Partition data disks
+  shell: parted -s -a optimal /dev/{{ item }} mklabel gpt mkpart primary xfs 2048s 100% && sleep 5 && partprobe /dev/{{ item }}
+  when: ansible_devices[item] is defined and ansible_devices[item]['partitions'] == {}
+  with_items: options.data_disks_devices
+
+- name: Create the filesystem on data disks
+  filesystem: dev="/dev/{{ item }}1" fstype="xfs"
+  when: ansible_devices[item] is defined
+  with_items: options.data_disks_devices
+
+- name: Mount data disk under {{ options.cassandra_base_path }}
+  mount: state=mounted src="/dev/{{ options.data_disks_devices[0] }}1" name="{{ options.cassandra_base_path }}" fstype=xfs opts=defaults,noatime dump=0 passno=0
+  when: ansible_devices[options.data_disks_devices[0]] is defined
