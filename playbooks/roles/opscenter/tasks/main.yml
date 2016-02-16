@@ -44,10 +44,25 @@
 
 - set_fact: cluster_def="{{ cluster_def_b64.content|b64decode }}"
 
+- name: Login to {{ cluster_name }} if authentication is enabled
+  uri:
+    url=http://{{ ansible_fqdn }}:8888/login
+    method=POST
+    body=' {"username":"admin","password":"{{ admin_password }}"}'
+    body_format=raw
+    status_code=200
+    return_content=yes
+  when: opscenter_auth
+  register: current_session
+
+- set_fact: session_id={{ current_session.json.sessionid }}
+  when: opscenter_auth
+
 - name: Check if a config for {{ cluster_name }} already exists
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
     method=GET
+    HEADER_opscenter-session={{ session_id|default("") }}
     status_code=200,201,202,404
     return_content=yes
   register: current_config
@@ -58,6 +73,7 @@
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs
     method=POST
+    HEADER_opscenter-session={{ session_id|default("") }}
     body={{ cluster_def }}
     body_format=json
     timeout={{ opscenter_config.add_cluster_timeout }}
@@ -71,6 +87,7 @@
   uri:
     url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
     method=PUT
+    HEADER_opscenter-session={{ session_id|default("") }}
     body={{ cluster_def }}
     body_format=json
     timeout={{ opscenter_config.add_cluster_timeout }}

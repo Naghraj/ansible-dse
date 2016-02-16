@@ -5,6 +5,8 @@ dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'
 opscenter_dc: 'opscenter'
 opscenter_group_name: 'opscenter-node'
+opscenter_auth: true
+admin_password: 'admin'
 
 # set to true to show host variables
 debug: false
