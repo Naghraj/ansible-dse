@@ -13,8 +13,8 @@
 - name: "Apply the dse role to all cluster nodes"
   hosts: dse-cluster
   any_errors_fatal: true
-  sudo: yes
-  sudo_user: root
+  become: yes
+  become_user: root
   remote_user: root
   pre_tasks:
     - name: "Show debug info"
@@ -31,6 +31,8 @@
 - name: "Apply the opscenter role to the opscenter group"
   hosts: opscenter-node
   any_errors_fatal: true
+  become: yes
+  become_user: root
   remote_user: root
   pre_tasks:
     - name: "Show debug info"
@@ -47,8 +49,8 @@
 - name: "Apply the datastax-agent role to all cluster nodes"
   hosts: dse-cluster
   any_errors_fatal: true
-  sudo: yes
-  sudo_user: root
+  become: yes
+  become_user: root
   remote_user: root
   roles:
     - datastax-agent
