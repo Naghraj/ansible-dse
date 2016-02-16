@@ -6,6 +6,7 @@
     groups: "dse-cluster"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
+    rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"
   with_items: "{{ groups[outer_loop.options.group] }}"
   when: "{{ outer_loop.options.group != opscenter_group_name }}"
   tags:
@@ -17,6 +18,7 @@
     groups: "dse-seeds"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
+    rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"
   with_items: "{{ groups[outer_loop.options.group]|sort|slice(2)|list|first }}"
   when: "{{ outer_loop.options.group != opscenter_group_name }}"
   tags:
@@ -28,6 +30,7 @@
     groups: "{{ opscenter_group_name }}"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
+    rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"
   with_items: "{{ groups[outer_loop.options.group]|sort|list|first }}"
   when: "{{ outer_loop.dc_name == opscenter_dc }}"
   tags:
