@@ -28,3 +28,4 @@ networking_bond: "redhat-ifcfg-bond.j2"
 
 datastax_repo: "redhat-datastax_repo.j2"
 datastax_repo_file: "/etc/yum.repos.d/datastax.repo"
+datastax_repo_key: "http://rpm.datastax.com/rpm/repo_key"
