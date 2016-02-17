@@ -14,8 +14,6 @@
   hosts: dse-cluster, opscenter-node
   any_errors_fatal: true
   become: yes
-  become_user: root
-  remote_user: root
   pre_tasks:
     - name: "Show debug info"
       debug: var=hostvars[inventory_hostname]
