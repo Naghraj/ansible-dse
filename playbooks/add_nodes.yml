@@ -2,7 +2,7 @@
 
 - add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
-    ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
+    ansible_host: "{{ hostvars[item].ansible_host|default(hostvars[item].ansible_ssh_host) }}"
     groups: "dse-cluster"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
@@ -14,7 +14,7 @@
 
 - add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
-    ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
+    ansible_host: "{{ hostvars[item].ansible_host|default(hostvars[item].ansible_ssh_host) }}"
     groups: "dse-seeds"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
@@ -26,7 +26,7 @@
 
 - add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
-    ansible_ssh_host: "{{ hostvars[item].ansible_ssh_host }}"
+    ansible_host: "{{ hostvars[item].ansible_host|default(hostvars[item].ansible_ssh_host) }}"
     groups: "{{ opscenter_group_name }}"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
