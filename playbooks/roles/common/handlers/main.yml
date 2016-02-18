@@ -5,3 +5,7 @@
 
 - name: Gather facts
   action: setup
+
+- name: update-grub
+  shell: "{{ update_grub }}"
+  when: "{{ ansible_distribution_major_version|int }} > 6"
