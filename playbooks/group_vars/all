@@ -4,7 +4,6 @@ dserepouser: 'user'
 dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'
 opscenter_dc: 'opscenter'
-opscenter_group_name: 'opscenter-node'
 opscenter_auth: true
 admin_password: 'admin'
 
@@ -77,7 +76,7 @@ topology:
 
   - dc_name: opscenter
     options:
-      group: "{{ opscenter_group_name }}"
+      group: 'opscenter-node'
       data_disks_devices: []
       cassandra_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'

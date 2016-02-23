@@ -12,7 +12,7 @@
     options: "{{ outer_loop.options }}"
     rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"
   with_items: "{{ groups[outer_loop.options.group] }}"
-  when: "{{ outer_loop.options.group != opscenter_group_name }}"
+  when: "{{ outer_loop.options.workloads is defined }}"
   tags:
     - always
 
@@ -28,7 +28,7 @@
     options: "{{ outer_loop.options }}"
     rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"
   with_items: "{{ groups[outer_loop.options.group]|sort|slice(2)|list|first }}"
-  when: "{{ outer_loop.options.group != opscenter_group_name }}"
+  when: "{{ outer_loop.options.workloads is defined }}"
   tags:
     - always
 
@@ -39,7 +39,7 @@
     ansible_ssh_pass: "{{ hostvars[item].ansible_ssh_pass|default('') }}"
     ansible_become_user: root
     ansible_become_pass: "{{ hostvars[item].ansible_ssh_pass|default('') }}"
-    groups: "{{ opscenter_group_name }}"
+    groups: "opscenter-group"
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
     rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"

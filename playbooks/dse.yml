@@ -4,7 +4,7 @@
   connection: local
   gather_facts: False
   tasks:
-    - name: "Add nodes to dse-cluster and dse-seeds groups"
+    - name: "Add nodes to required groups"
       include: add_nodes.yml
       when: ((outer_loop is defined and outer_loop.options.group) or item.options.group) and ((outer_loop is defined and groups[outer_loop.options.group]|length > 0) or groups[item.options.group]|length > 0)
       with_items:
@@ -26,8 +26,8 @@
         commitlog_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/commitlog"
         saved_caches_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/saved_caches"
 
-- name: "Apply the opscenter role to the opscenter group"
-  hosts: opscenter-node
+- name: "Apply the opscenter role to the opscenter-group group"
+  hosts: opscenter-group
   any_errors_fatal: true
   become: yes
   pre_tasks:
