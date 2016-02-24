@@ -19,7 +19,11 @@ interface = 0.0.0.0
 # Set this option to True to enable OpsCenter authentication.  A default admin
 # account will be created with the username "admin" and password "admin".
 # Accounts and roles can then be created and modified from within the web UI.
+{% if opscenter_auth == true -%}
+enabled = True
+{% else -%}
 enabled = False
+{% endif %}
 
 # To help us better understand the needs of users and to improve OpsCenter, OpsCenter
 # reports information about itself and the clusters it manages to a central DataStax
