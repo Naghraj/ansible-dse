@@ -1,6 +1,7 @@
 - set_fact: outer_loop="{{ item }}"
 
-- add_host:
+- name: "Add nodes to dse-cluster group (from {{ outer_loop.dc_name }})"
+  add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
     ansible_host: "{{ hostvars[item].ansible_host|default(hostvars[item].ansible_ssh_host) }}"
     ansible_user: "{{ hostvars[item].ansible_user|default('root') }}"
@@ -16,7 +17,8 @@
   tags:
     - always
 
-- add_host:
+- name: "Add nodes to dse-seeds group (from {{ outer_loop.dc_name }})"
+  add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
     ansible_host: "{{ hostvars[item].ansible_host|default(hostvars[item].ansible_ssh_host) }}"
     ansible_user: "{{ hostvars[item].ansible_user|default('root') }}"
@@ -32,7 +34,8 @@
   tags:
     - always
 
-- add_host:
+- name: "Add nodes to opscenter-group group (from {{ outer_loop.dc_name }})"
+  add_host:
     name: "{{ hostvars[item].inventory_hostname }}"
     ansible_host: "{{ hostvars[item].ansible_host|default(hostvars[item].ansible_ssh_host) }}"
     ansible_user: "{{ hostvars[item].ansible_user|default('root') }}"
