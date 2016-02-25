@@ -4,7 +4,7 @@
     update_cache: yes
     state: installed
   with_items:
-    - dse-full
+    - dse-full-{{ dse_version }}*
   notify: reload systemd
   when: ansible_os_family == "RedHat"
 
@@ -14,7 +14,7 @@
     update_cache: yes
     state: installed
   with_items:
-    - dse-full
+    - dse-full={{ dse_version }}*
   when: ansible_os_family == "Debian"
 
 - meta: flush_handlers
