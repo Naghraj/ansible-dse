@@ -12,7 +12,7 @@
     dc_name: "{{ outer_loop.dc_name }}"
     options: "{{ outer_loop.options }}"
     rack_name: "{{ hostvars[item].rack_name|default('RAC1') }}"
-  with_items: "{{ groups[outer_loop.options.group] }}"
+  with_items: "{{ groups[outer_loop.options.group]|sort }}"
   when: "{{ outer_loop.options.workloads is defined }}"
   tags:
     - always
