@@ -7,8 +7,5 @@
   service: name=dse state=restarted
   notify: sleep
 
-- name: Gather facts
-  action: setup
-
 - name: sleep
   pause: seconds=30
