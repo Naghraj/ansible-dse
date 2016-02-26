@@ -1,6 +1,6 @@
 - name: Install DSE packages (yum)
   yum:
-    name: item
+    name: "{{ item }}"
     update_cache: yes
     state: installed
   with_items:
@@ -10,7 +10,7 @@
 
 - name: Install DSE packages (apt)
   apt:
-    name: item
+    name: "{{ item }}"
     update_cache: yes
     state: installed
   with_items:
