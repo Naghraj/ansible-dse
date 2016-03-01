@@ -1,5 +1,6 @@
 ---
 cluster_name: testcluster
+dse_version: '4.8'
 dserepouser: 'user'
 dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'

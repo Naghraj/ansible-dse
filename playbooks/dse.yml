@@ -10,10 +10,17 @@
       with_items:
         - "{{ topology }}"
 
+- name: "Gather facts"
+  hosts: dse-cluster
+  any_errors_fatal: true
+  become: yes
+
 - name: "Apply the dse role to all cluster nodes"
   hosts: dse-cluster
   any_errors_fatal: true
   become: yes
+  serial: 1
+  gather_facts: no
   pre_tasks:
     - name: "Show debug info"
       debug: var=hostvars[inventory_hostname]

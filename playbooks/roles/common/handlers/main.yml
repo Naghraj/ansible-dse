@@ -1,10 +1,6 @@
 ---
 - name: reload firewalld
   command: firewall-cmd --reload
-  notify: Gather facts
-
-- name: Gather facts
-  action: setup
 
 - name: update-grub
   shell: "{{ update_grub }}"
