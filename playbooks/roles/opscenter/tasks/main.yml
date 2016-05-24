@@ -46,7 +46,7 @@
 
 - name: Login to {{ cluster_name }} if authentication is enabled
   uri:
-    url=http://{{ ansible_fqdn }}:8888/login
+    url=http://{{ ansible_nodename }}:8888/login
     method=POST
     body=' {"username":"admin","password":"{{ admin_password }}"}'
     body_format=raw
@@ -60,7 +60,7 @@
 
 - name: Check if a config for {{ cluster_name }} already exists
   uri:
-    url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
+    url=http://{{ ansible_nodename }}:8888/cluster-configs/{{ cluster_name }}
     method=GET
     HEADER_opscenter-session={{ session_id|default("") }}
     status_code=200,201,202,404
@@ -71,7 +71,7 @@
 
 - name: Register {{ cluster_name }} in OpsCenter
   uri:
-    url=http://{{ ansible_fqdn }}:8888/cluster-configs
+    url=http://{{ ansible_nodename }}:8888/cluster-configs
     method=POST
     HEADER_opscenter-session={{ session_id|default("") }}
     body={{ cluster_def }}
@@ -85,7 +85,7 @@
 
 - name: Update the config for {{ cluster_name }} in OpsCenter
   uri:
-    url=http://{{ ansible_fqdn }}:8888/cluster-configs/{{ cluster_name }}
+    url=http://{{ ansible_nodename }}:8888/cluster-configs/{{ cluster_name }}
     method=PUT
     HEADER_opscenter-session={{ session_id|default("") }}
     body={{ cluster_def }}
@@ -99,7 +99,7 @@
 
 #- name: Login to OpsCenter and get session
 #  uri:
-#    url: {{ ansible_fqdn }}/opscenter/index.html
+#    url: {{ ansible_nodename }}/opscenter/index.html
 #    method: POST
 #    user: {{ opscenter_user }}
 #    password: {{ opscenter_pass }}
