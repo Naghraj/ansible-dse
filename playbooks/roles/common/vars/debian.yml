@@ -1,20 +1,20 @@
 packages:
-    - default-jdk
-    - python-simplejson
-    - python-httplib2
-    - man-db
-    - vim
-    - sysstat
-    - lsof
-    - netcat
-    - ntp
-    - parted
-    - iotop
-    - unzip
-    - curl
-    - wget
-    - ifenslave
-    - xfsprogs
+  - default-jdk
+  - python-simplejson
+  - python-httplib2
+  - man-db
+  - vim
+  - sysstat
+  - lsof
+  - netcat
+  - ntp
+  - parted
+  - iotop
+  - unzip
+  - curl
+  - wget
+  - ifenslave
+  - xfsprogs
 
 update_grub: "/usr/sbin/update-grub"
 
