@@ -111,7 +111,7 @@
   template: src=hosts.j2 dest=/etc/hosts mode=0644
 
 - include: firewall.yml
-  when: options.cloud is defined and options.cloud
+  when: rax_id is defined
   tags:
     - firewall
 
