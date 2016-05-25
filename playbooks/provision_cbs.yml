@@ -1,69 +1,29 @@
-- set_fact: outer_loop="{{ item }}"
-
-- name: "Create CBS Volumes for dse nodes from {{ outer_loop.dc_name }} dc (LON region)"
+- name: Create CBS Volumes for {{ rax_item.name }}
   local_action:
     module: rax_cbs
-    credentials: "{{ credentials_file_lon }}"
-    name: "{{ local_item[0].name }}_{{ local_item[1] }}"
-    volume_type: "{{ outer_loop.options.cbs.disks_type }}"
-    size: "{{ outer_loop.options.cbs.disks_size }}"
-    region: "{{ outer_loop.options.cloud.region }}"
+    credentials: "{{ credentials_filename }}"
+    name: "{{ rax_item.name }}_{{ local_item }}"
+    volume_type: "{{ item.options.cbs.disks_type }}"
+    size: "{{ item.options.cbs.disks_size }}"
+    region: "{{ item.options.cloud.region }}"
     state: present
     wait: true
-  with_nested:
-    - rax_dse_{{ item.options.group|replace("-","_") }}.instances
-    - outer_loop.options.data_disks_devices
   loop_control:
     loop_var: local_item
-  when: outer_loop.options.cloud.region=="LON"
+  with_items:
+    - "{{ item.options.data_disks_devices }}"
 
-- name: "Attach CBS Volumes to dse nodes from {{ outer_loop.dc_name }} dc (LON region)"
+- name: Attach CBS Volumes to {{ rax_item.name }}
   local_action:
     module: rax_cbs_attachments
-    credentials: "{{ credentials_file_lon }}"
-    volume: "{{ local_item[0].name }}_{{ local_item[1] }}"
-    server: "{{ local_item[0].id }}"
-    region: "{{ outer_loop.options.cloud.region }}"
-    device: "/dev/{{ local_item[1] }}"
+    credentials: "{{ credentials_filename }}"
+    volume: "{{ rax_item.name }}_{{ local_item }}"
+    server: "{{ rax_item.id }}"
+    region: "{{ item.options.cloud.region }}"
+    device: "/dev/{{ local_item }}"
     state: present
     wait: true
-  with_nested:
-    - rax_dse_{{ item.options.group|replace("-","_") }}.instances
-    - outer_loop.options.data_disks_devices
   loop_control:
     loop_var: local_item
-  when: outer_loop.options.cloud.region=="LON"
-
-- name: "Create CBS Volumes for dse nodes from {{ outer_loop.dc_name }} dc (non-LON regions)"
-  local_action:
-    module: rax_cbs
-    credentials: "{{ credentials_file }}"
-    name: "{{ local_item[0].name }}_{{ local_item[1] }}"
-    volume_type: "{{ outer_loop.options.cbs.disks_type }}"
-    size: "{{ outer_loop.options.cbs.disks_size }}"
-    region: "{{ outer_loop.options.cloud.region }}"
-    state: present
-    wait: true
-  with_nested:
-    - rax_dse_{{ item.options.group|replace("-","_") }}.instances
-    - outer_loop.options.data_disks_devices
-  loop_control:
-    loop_var: local_item
-  when: outer_loop.options.cloud.region!="LON"
-
-- name: "Attach CBS Volumes to dse nodes from {{ outer_loop.dc_name }} dc (non-LON regions)"
-  local_action:
-    module: rax_cbs_attachments
-    credentials: "{{ credentials_file }}"
-    volume: "{{ local_item[0].name }}_{{ local_item[1] }}"
-    server: "{{ local_item[0].id }}"
-    region: "{{ outer_loop.options.cloud.region }}"
-    device: "/dev/{{ local_item[1] }}"
-    state: present
-    wait: true
-  with_nested:
-    - rax_dse_{{ item.options.group|replace("-","_") }}.instances
-    - outer_loop.options.data_disks_devices
-  loop_control:
-    loop_var: local_item
-  when: outer_loop.options.cloud.region!="LON"
+  with_items:
+    - "{{ item.options.data_disks_devices }}"
