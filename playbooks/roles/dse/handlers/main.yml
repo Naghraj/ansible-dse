@@ -1,11 +1,11 @@
 ---
-- name: reload systemd
+- name: Reload systemd
   command: systemctl daemon-reload
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
-- name: restart dse
+- name: Restart dse
   service: name=dse state=restarted
-  notify: sleep
+  notify: Sleep
 
-- name: sleep
+- name: Sleep
   pause: seconds=30

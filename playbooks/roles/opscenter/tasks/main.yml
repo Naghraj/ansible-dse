@@ -7,7 +7,7 @@
   with_items:
     - opscenter
   when: ansible_os_family == "RedHat"
-  notify: reload systemd
+  notify: Reload systemd
 
 - name: Install OpsCenter (apt)
   apt:
@@ -22,7 +22,7 @@
 
 - name: Update OpsCenter configuration
   template: src=opscenterd.conf.j2 dest=/etc/opscenter/opscenterd.conf
-  notify: restart opscenter
+  notify: Restart opscenter
 
 - meta: flush_handlers
 
@@ -42,7 +42,8 @@
   tags:
     - cluster_create
 
-- set_fact: cluster_def="{{ cluster_def_b64.content|b64decode }}"
+- name: Set cluster_def fact
+  set_fact: cluster_def="{{ cluster_def_b64.content|b64decode }}"
 
 - name: Login to {{ cluster_name }} if authentication is enabled
   uri:
@@ -55,7 +56,8 @@
   when: opscenter_auth
   register: current_session
 
-- set_fact: session_id={{ current_session.json.sessionid }}
+- name: Set session_id fact
+  set_fact: session_id={{ current_session.json.sessionid }}
   when: opscenter_auth
 
 - name: Check if a config for {{ cluster_name }} already exists

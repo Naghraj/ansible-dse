@@ -5,7 +5,7 @@
     state: installed
   with_items:
     - datastax-agent
-  notify: reload systemd
+  notify: Reload systemd
   when: ansible_os_family == "RedHat"
 
 - name: Install datastax-agent package (apt)
@@ -19,7 +19,7 @@
 
 - name: Update datastax-agent configuration
   template: src=address.yaml.j2 dest=/var/lib/datastax-agent/conf/address.yaml
-  notify: restart datastax-agent
+  notify: Restart datastax-agent
 
 - meta: flush_handlers
 

@@ -99,8 +99,8 @@
   lineinfile: dest=/etc/default/grub
               state=present
               line='GRUB_CMDLINE_LINUX=$GRUB_CMDLINE_LINUX" transparent_hugepage=never"'
-  when: "{{ ansible_distribution_major_version|int }} > 6"
-  notify: update-grub
+  when: ansible_distribution_major_version|int > 6
+  notify: Run update-grub
 
 - meta: flush_handlers
 
@@ -111,7 +111,8 @@
 - name: Setup hosts file
   template: src=hosts.j2 dest=/etc/hosts mode=0644
 
-- include: firewall.yml
+- name: Include firewall.yml
+  include: firewall.yml
   when: rax_id is defined
   tags:
     - firewall
