@@ -21,6 +21,13 @@
   template: src=address.yaml.j2 dest=/var/lib/datastax-agent/conf/address.yaml
   notify: Restart datastax-agent
 
+- name: Upload agentKeyStore keyfile
+  copy:
+    src: /tmp/agentKeyStore
+    dest: /var/lib/datastax-agent/ssl/agentKeyStore
+  notify: Restart datastax-agent
+  when: opscenter_config.use_ssl_agents
+
 - meta: flush_handlers
 
 - name: Make sure the datastax-agent is running

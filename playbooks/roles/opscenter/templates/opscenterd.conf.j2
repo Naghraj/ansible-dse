@@ -40,3 +40,10 @@ default_api_timeout = {{ opscenter_config.default_api_timeout }}
 
 [clusters]
 add_cluster_timeout = {{ opscenter_config.add_cluster_timeout }}
+
+[agents]
+{% if opscenter_config.use_ssl_agents == true -%}
+use_ssl = true
+{% else -%}
+use_ssl = false
+{% endif %}

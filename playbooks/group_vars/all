@@ -14,6 +14,7 @@ opscenter_config:
   authentication: true
   repair_service: true
   repair_time_to_completion: 777600  ## 9 days
+  use_ssl_agents: false
   default_api_timeout: 60
   add_cluster_timeout: 120
 
