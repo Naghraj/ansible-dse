@@ -102,12 +102,29 @@
   tags:
     - cluster_create
 
-#- name: Login to OpsCenter and get session
-#  uri:
-#    url: {{ ansible_nodename }}/opscenter/index.html
-#    method: POST
-#    user: {{ opscenter_user }}
-#    password: {{ opscenter_pass }}
-#    force_basic_auth: yes
-#    status_code: 201
-#  register: sessionid
+- name: Get the repair service status for {{ cluster_name }}
+  uri:
+    url=http://{{ ansible_nodename }}:{{ opscenter_config.port }}/{{ cluster_name }}/services/repair
+    method=GET
+    HEADER_opscenter-session={{ session_id|default("") }}
+    status_code=200
+    return_content=yes
+  register: repair_service
+
+- name: Enable the repair service for {{ cluster_name }}
+  uri:
+    url=http://{{ ansible_nodename }}:{{ opscenter_config.port }}/{{ cluster_name }}/services/repair
+    method=POST
+    HEADER_opscenter-session={{ session_id|default("") }}
+    body=' {"status":true,"time_to_completion":{{ opscenter_config.repair_time_to_completion|int }} }'
+    body_format=raw
+    status_code=200
+  when: repair_service.json.status != true and opscenter_config.repair_service
+
+- name: Disable the repair service for {{ cluster_name }}
+  uri:
+    url=http://{{ ansible_nodename }}:{{ opscenter_config.port }}/{{ cluster_name }}/services/repair
+    method=DELETE
+    HEADER_opscenter-session={{ session_id|default("") }}
+    status_code=200
+  when: repair_service.json.status and opscenter_config.repair_service != true

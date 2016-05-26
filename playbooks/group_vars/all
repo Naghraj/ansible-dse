@@ -12,6 +12,8 @@ opscenter_config:
   port: 8888
   logging_level: 'INFO'
   authentication: true
+  repair_service: true
+  repair_time_to_completion: 777600  ## 9 days
   default_api_timeout: 60
   add_cluster_timeout: 120
 
