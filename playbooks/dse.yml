@@ -43,9 +43,6 @@
       when: debug
   roles:
     - role: opscenter
-      opscenter_config:
-        default_api_timeout: 60
-        add_cluster_timeout: 120
   tags:
     - opscenter
 

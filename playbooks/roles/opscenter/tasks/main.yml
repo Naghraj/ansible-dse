@@ -53,12 +53,12 @@
     body_format=raw
     status_code=200
     return_content=yes
-  when: opscenter_auth
+  when: opscenter_config.authentication
   register: current_session
 
 - name: Set session_id fact
   set_fact: session_id={{ current_session.json.sessionid }}
-  when: opscenter_auth
+  when: opscenter_config.authentication
 
 - name: Check if a config for {{ cluster_name }} already exists
   uri:
