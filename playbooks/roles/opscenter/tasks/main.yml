@@ -31,6 +31,9 @@
   tags:
     - services
 
+- name: Waiting for OpsCenter to start listening on port {{ opscenter_config.port }}
+  wait_for: host={{ ansible_nodename }} port={{ opscenter_config.port }}
+
 - name: Upload the config for {{ cluster_name }}
   template: src=cluster_def.j2 dest=/tmp/cluster_def mode=0644
   tags:
