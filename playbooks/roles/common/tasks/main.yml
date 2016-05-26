@@ -116,7 +116,20 @@
   tags:
     - firewall
 
-- include: partitioning.yml
+- name: Include partitioning.yml
+  include: partitioning.yml
+  with_items:
+    - "{{ options.data_disks_devices|default([]) }}"
+
+- name: Mount data disk under {{ options.cassandra_base_path|default("") }}
+  mount: state=mounted
+         src="/dev/{{ item.1 }}1"
+         name="{{ options.cassandra_base_path }}"
+         fstype="{{ data_disks_filesystem }}"
+         opts=defaults,noatime
+         dump=0
+         passno=0
+  with_indexed_items: "{{ options.data_disks_devices|default([]) }}"
   when: options.data_disks_devices is defined and options.data_disks_devices and options.cassandra_base_path is defined and options.cassandra_base_path
 
 - name: Upload Datastax Repo
