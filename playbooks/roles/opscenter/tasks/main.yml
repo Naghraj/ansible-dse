@@ -102,6 +102,15 @@
   tags:
     - cluster_create
 
+- name: Get the cluster Datacenters
+  uri:
+    url=http://{{ ansible_nodename }}:{{ opscenter_config.port }}/{{ cluster_name }}/nodes/all/dc
+    method=GET
+    HEADER_opscenter-session={{ session_id|default("") }}
+    status_code=200
+    return_content=yes
+  register: cluster_dcs
+
 - name: Get the repair service status for {{ cluster_name }}
   uri:
     url=http://{{ ansible_nodename }}:{{ opscenter_config.port }}/{{ cluster_name }}/services/repair
@@ -111,7 +120,7 @@
     return_content=yes
   register: repair_service
 
-- name: Enable the repair service for {{ cluster_name }}
+- name: Enable the repair service for {{ cluster_name }} (only if cluster has a single Datacenter)
   uri:
     url=http://{{ ansible_nodename }}:{{ opscenter_config.port }}/{{ cluster_name }}/services/repair
     method=POST
@@ -119,7 +128,7 @@
     body=' {"status":true,"time_to_completion":{{ opscenter_config.repair_time_to_completion|int }} }'
     body_format=raw
     status_code=200
-  when: repair_service.json.status != true and opscenter_config.repair_service
+  when: repair_service.json.status != true and opscenter_config.repair_service and cluster_dcs.json.values()|unique|count < 2
 
 - name: Disable the repair service for {{ cluster_name }}
   uri:
