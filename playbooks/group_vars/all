@@ -11,7 +11,7 @@ data_disks_filesystem: xfs
 opscenter_config:
   port: 8888
   logging_level: 'INFO'
-  authentication: true
+  authentication: false
   repair_service: true
   repair_time_to_completion: 777600  ## 9 days
   use_ssl_agents: false
