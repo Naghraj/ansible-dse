@@ -28,7 +28,7 @@ The following steps must be followed to install Ansible and the prerequisites on
   ```
   sudo su -
   yum -y remove python-crypto
-  yum install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+  yum -y install epel-release || yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
   yum repolist; yum install gcc gcc-c++ python-pip python-devel sshpass git vim-enhanced -y
   pip install ansible pyrax importlib oslo.config==3.0.0
   ```
@@ -45,7 +45,7 @@ The following steps must be followed to install Ansible and the prerequisites on
 
   ```
   sudo su -
-  yum install https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+  yum -y install epel-release || yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   yum repolist; yum install gcc gcc-c++ python-pip python-devel sshpass git vim-enhanced -y
   pip install ansible pyrax
   ```
@@ -372,7 +372,7 @@ Install Ansible and git:
 
 ```
 sudo su -
-yum install http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+yum -y install epel-release || yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 yum repolist; yum install python-pip python-devel sshpass git vim-enhanced -y
 pip install ansible
 ```
@@ -383,7 +383,7 @@ Install Ansible and git:
 
 ```
 sudo su -
-yum install https://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+yum -y install epel-release || yum -y install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum repolist; yum install python-pip python-devel sshpass git vim-enhanced -y
 pip install ansible
 ```
