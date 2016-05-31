@@ -38,7 +38,7 @@ topology:
       data_disks_devices: ['xvde']
       cassandra_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'
-      broadcast_interface: 'eth0'
+      broadcast_interface: 'eth1'
       rpc_interface: 'eth1'
       cloud:
         region: 'IAD'
@@ -91,7 +91,7 @@ topology:
       data_disks_devices: []
       cassandra_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'
-      broadcast_interface: 'eth0'
+      broadcast_interface: 'eth1'
       rpc_interface: 'eth1'
       cloud:
         region: 'IAD'
