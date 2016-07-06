@@ -1,10 +1,7 @@
 ---
-- name: reload systemd
+- name: Reload systemd
   command: systemctl daemon-reload
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
-- name: restart datastax-agent
+- name: Restart datastax-agent
   service: name=datastax-agent state=restarted
-
-- name: Gather facts
-  action: setup

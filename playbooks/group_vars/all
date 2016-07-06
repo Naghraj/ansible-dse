@@ -5,8 +5,18 @@ dserepouser: 'user'
 dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'
 opscenter_dc: 'opscenter'
-opscenter_auth: true
 admin_password: 'admin'
+data_disks_filesystem: xfs
+
+opscenter_config:
+  port: 8888
+  logging_level: 'INFO'
+  authentication: true
+  repair_service: true
+  repair_time_to_completion: 777600  ## 9 days
+  use_ssl_agents: false
+  default_api_timeout: 60
+  add_cluster_timeout: 120
 
 # set to true to show host variables
 debug: false

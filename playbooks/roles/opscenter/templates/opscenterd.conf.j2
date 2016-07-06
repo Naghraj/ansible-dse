@@ -1,7 +1,7 @@
 # opscenterd.conf
 
 [webserver]
-port = 8888
+port = {{ opscenter_config.port }}
 interface = 0.0.0.0
 # The following settings can be used to enable ssl support for the opscenter
 # web application. Change these values to point to the ssl certificate and key
@@ -13,13 +13,13 @@ interface = 0.0.0.0
 
 [logging]
 # level may be TRACE, DEBUG, INFO, WARN, or ERROR
-#level = INFO
+level = {{ opscenter_config.logging_level }}
 
 [authentication]
 # Set this option to True to enable OpsCenter authentication.  A default admin
 # account will be created with the username "admin" and password "admin".
 # Accounts and roles can then be created and modified from within the web UI.
-{% if opscenter_auth == true -%}
+{% if opscenter_config.authentication == true -%}
 enabled = True
 {% else -%}
 enabled = False
@@ -40,3 +40,10 @@ default_api_timeout = {{ opscenter_config.default_api_timeout }}
 
 [clusters]
 add_cluster_timeout = {{ opscenter_config.add_cluster_timeout }}
+
+[agents]
+{% if opscenter_config.use_ssl_agents == true -%}
+use_ssl = true
+{% else -%}
+use_ssl = false
+{% endif %}
