@@ -1,28 +1,28 @@
 ---
-- name: "Add nodes to required groups"
+- name: Add nodes to required groups
   hosts: localhost
   connection: local
   gather_facts: False
   tasks:
-    - name: "Add nodes to required groups"
+    - name: Add nodes to required groups
       include: add_nodes.yml
       when: ((outer_loop is defined and outer_loop.options.group) or item.options.group) and ((outer_loop is defined and groups[outer_loop.options.group]|length > 0) or groups[item.options.group]|length > 0)
       with_items:
         - "{{ topology }}"
 
-- name: "Gather facts"
+- name: Gather facts
   hosts: dse-cluster
   any_errors_fatal: true
   become: yes
 
-- name: "Apply the dse role to all cluster nodes"
+- name: Apply the dse role to all cluster nodes
   hosts: dse-cluster
   any_errors_fatal: true
   become: yes
   serial: 1
   gather_facts: no
   pre_tasks:
-    - name: "Show debug info"
+    - name: Show debug info
       debug: var=hostvars[inventory_hostname]
       when: debug
   roles:
@@ -32,26 +32,39 @@
           - "{{ cassandra_base_path | default('/var/lib/cassandra') }}/data"
         commitlog_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/commitlog"
         saved_caches_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/saved_caches"
+        hints_directory: "{{ cassandra_base_path | default('/var/lib/cassandra') }}/hints"
 
-- name: "Apply the opscenter role to the opscenter-group group"
+- name: Apply the opscenter role to the opscenter-group group
   hosts: opscenter-group
   any_errors_fatal: true
   become: yes
   pre_tasks:
-    - name: "Show debug info"
+    - name: Show debug info
       debug: var=hostvars[inventory_hostname]
       when: debug
   roles:
     - role: opscenter
-      opscenter_config:
-        default_api_timeout: 60
-        add_cluster_timeout: 120
+  post_tasks:
+    - name: Fetch the agentKeyStore
+      fetch:
+        src: /var/lib/opscenter/ssl/agentKeyStore
+        flat: yes
+        dest: /tmp/
+        fail_on_missing: yes
+      when: opscenter_config.use_ssl_agents
   tags:
     - opscenter
 
-- name: "Apply the datastax-agent role to all cluster nodes"
+- name: Apply the datastax-agent role to all cluster nodes
   hosts: dse-cluster
   any_errors_fatal: true
   become: yes
   roles:
-    - datastax-agent
+    - role: datastax-agent
+
+- name: Cleanup /tmp/agentKeyStore
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - local_action: file path=/tmp/agentKeyStore state=absent

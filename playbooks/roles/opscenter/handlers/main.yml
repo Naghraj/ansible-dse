@@ -1,11 +1,11 @@
 ---
-- name: reload systemd
+- name: Reload systemd
   command: systemctl daemon-reload
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
-- name: sleep
-  pause: seconds=30
-
-- name: restart opscenter
+- name: Restart opscenter
   service: name=opscenterd state=restarted
-  notify: sleep
+  notify: Sleep
+
+- name: Sleep
+  pause: seconds=30

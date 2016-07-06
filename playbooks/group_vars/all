@@ -1,12 +1,22 @@
 ---
 cluster_name: testcluster
-dse_version: '4.8'
+dse_version: '5'
 dserepouser: 'user'
 dserepopass: 'pass'
 dsehost: 'rpm.datastax.com'
 opscenter_dc: 'opscenter'
-opscenter_auth: true
 admin_password: 'admin'
+data_disks_filesystem: xfs
+
+opscenter_config:
+  port: 8888
+  logging_level: 'INFO'
+  authentication: false
+  repair_service: true
+  repair_time_to_completion: 777600  ## 9 days
+  use_ssl_agents: false
+  default_api_timeout: 60
+  add_cluster_timeout: 120
 
 # set to true to show host variables
 debug: false
@@ -28,7 +38,7 @@ topology:
       data_disks_devices: ['xvde']
       cassandra_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'
-      broadcast_interface: 'eth0'
+      broadcast_interface: 'eth1'
       rpc_interface: 'eth1'
       cloud:
         region: 'IAD'
@@ -81,7 +91,7 @@ topology:
       data_disks_devices: []
       cassandra_base_path: "/var/lib/cassandra"
       listen_interface: 'eth1'
-      broadcast_interface: 'eth0'
+      broadcast_interface: 'eth1'
       rpc_interface: 'eth1'
       cloud:
         region: 'IAD'
