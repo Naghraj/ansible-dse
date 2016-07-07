@@ -1,7 +1,7 @@
 - name: Create the SSH keypair for {{ item.options.cloud.region }} region
   local_action:
     module: rax_keypair
-    credentials: "{{ credentials_filename }}"
+    credentials: "{{ cloud_config.credentials_filename }}"
     name: "{{ cloud_config.ssh.keyname }}"
     public_key: "{{ lookup('file', cloud_config.ssh.keyfile) }}"
     region: "{{ item.options.cloud.region }}"
@@ -9,7 +9,7 @@
 - name: Create dse nodes for {{ item.dc_name }} dc
   local_action:
     module: rax
-    credentials: "{{ credentials_filename }}"
+    credentials: "{{ cloud_config.credentials_filename }}"
     name: "{{ item.options.group }}-%02d.{{ cloud_config.domain|lower }}"
     image: "{{ item.options.cloud.image }}"
     flavor: "{{ item.options.cloud.flavor }}"
