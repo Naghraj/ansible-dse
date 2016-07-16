@@ -4,8 +4,8 @@
   connection: local
   gather_facts: False
   tasks:
-    - name: Set credentials file to {{ credentials_file_lon }}
-      set_fact: credentials_filename="{{ credentials_file_lon }}"
+    - name: Set credentials file to {{ cloud_config.credentials_file_lon }}
+      set_fact: credentials_filename="{{ cloud_config.credentials_file_lon }}"
 
     - name: Build Rackspace Servers (LON region)
       include: provision_rax.yml
@@ -13,8 +13,8 @@
         - "{{ topology }}"
       when: item.options.cloud.region == "LON" and item.options.cloud is defined and item.options.cloud.nodes_count > 0
 
-    - name: Set credentials file to {{ credentials_file }}
-      set_fact: credentials_filename="{{ credentials_file }}"
+    - name: Set credentials file to {{ cloud_config.credentials_file }}
+      set_fact: credentials_filename="{{ cloud_config.credentials_file }}"
 
     - name: Build Rackspace Servers (non-LON regions)
       include: provision_rax.yml

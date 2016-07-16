@@ -24,6 +24,8 @@ debug: false
 cloud_config:
   domain: 'localnet'
   allowed_external_ips: ['127.0.0.1']
+  credentials_file: '~/.raxpub'
+  credentials_file_lon: ''
   ssh:
     keyname: 'dse-ssh-key'
     keyfile: '~/.ssh/id_rsa.pub'
